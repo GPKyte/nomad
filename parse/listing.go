@@ -36,6 +36,21 @@ type readable interface {
 	Read() string
 }
 
+// Listing is an initializer that takes context-dependent data and scrapes it
+func getListings(parsableSrcContent string) Listing {
+	scrapeStamp := recordScrapestamp()
+	departure := recordDeparture()
+	arrival := recordArrival()
+	price := findPrice()
+
+	return Listing{
+		Depart: departure,
+		Arrive: arrival,
+		Scrape: scrapeStamp,
+		Price:  price,
+	}
+}
+
 func (Listing) recordScrapestamp() timeSpace {
 
 }
