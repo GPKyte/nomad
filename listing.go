@@ -24,7 +24,7 @@ type ListingParser interface {
 	RecordScrapestamp() timeSpace
 	RecordDeparture() timeSpace
 	RecordArrival() timeSpace
-	FindPrice() int
+	RecordPrice() int
 }
 
 type genericParser struct {
@@ -38,10 +38,10 @@ type readable interface {
 
 // Listing is an initializer that takes context-dependent data and scrapes it
 func getListings(parsableSrcContent string) Listing {
-	scrapeStamp := recordScrapestamp()
-	departure := recordDeparture()
-	arrival := recordArrival()
-	price := findPrice()
+	scrapeStamp := RecordScrapestamp()
+	departure := RecordDeparture()
+	arrival := RecordArrival()
+	price := RecordPrice()
 
 	return Listing{
 		Depart: departure,
@@ -51,16 +51,16 @@ func getListings(parsableSrcContent string) Listing {
 	}
 }
 
-func (Listing) recordScrapestamp() timeSpace {
+func (Listing) RecordScrapestamp() timeSpace {
 
 }
-func (Listing) recordDeparture() timeSpace {
+func (Listing) RecordDeparture() timeSpace {
 
 }
-func (Listing) recordArrival() timeSpace {
+func (Listing) RecordArrival() timeSpace {
 
 }
-func (Listing) findPrice() int {
+func (Listing) RecordPrice() int {
 
 }
 
