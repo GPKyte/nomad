@@ -20,7 +20,7 @@ Any contributions are welcome! Follow some of these guide lines and suggestions 
 
 ## Results
 
-Possible Modules + API and structure of project
+## Possible Modules + API and structure of project
 * SecureCredentials Implements CleanDataConstant
 * RawListing Implements DirtyDataConstant, GenericListing
 * CleanListing Implements CleanDataConstant, GenericListing
@@ -34,14 +34,13 @@ Possible Modules + API and structure of project
 * Parse.XYZ
 * Logger (Should be abstracted even if logging with a good std libr)
 
-DevOps:
-* Ansible to setup and run tasks
+## DevOps:
 * Configuration file (git ignore)
     - Collection of sites to scrape and their settings
 * Default Configuration file (Version Control, VC)
 
 
-Display of information and use cases
+## Display of information and use cases
 * As a DEV
     - I want global var value tracing
     - Backwards debugging
@@ -67,12 +66,13 @@ Display of information and use cases
     - Create complex routes with optimal layovers (optimal for traveling to a pit-stop city)
 
 
-Development ideas:
+## Development ideas:
     Pair programming?? Help other Sen Sem projects/ be soundboard
     Use AI + Structured NLP to identify key information in page?
     Structure of DB? Relational?
 
 
-Norms:
+## Norms:
 "Data, POJO, immutable data" What to call this in naming consistently?
+Requesting all of the pages is the biggest time sink when scraping — it's good to avoid having to do any portion of that again, if possible. => Use Cached system separating scrape / parse / ETL
 
