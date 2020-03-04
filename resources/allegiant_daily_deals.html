@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Cheap Airline Tickets & Vacation Packages | Allegiant Air</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="keywords" content="Allegiant AllegiantAir deals savings low-cost flights hotels bundles bargain value cheap affordable inexpensive discounted" />
+  <meta name="description" content="Fly with us and save! Low cost airline offering cheap flights to Las Vegas, Florida and more. We offer airfare deals, cheap hotels and car rentals to popular vacation destinations throughout the U.S." />
+  <link rel="shortcut icon" href="https://www.allegiantair.com/sites/all/themes/allegiant/images/favicon.ico" type="image/vnd.microsoft.icon" />
+    <meta name="google-site-verification" content="5VnxZD-Gl9kpCG08-LL3Ii_q1ZUOlZg5DLGUmYIZt38" />
+    <!-- Google Tag Manager -->
+  <script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=false;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-WXPFTJJ');
+  </script>
+    <!-- End Google Tag Manager -->     
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  <script src="https://i.e.allegiant.com/wpm/986/G4/p/common/js/moment.js"></script>
+  <script src="https://i.e.allegiant.com/wpm/986/G4/p/common/js/moment-timezone-with-data.js"></script>
+  <script type="text/javascript">
+    try {
+      function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)','i'); // case insensitive
+        var results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+      };
+
+      var c = getUrlParameter('camp'), test = getUrlParameter('test');
+      var td = new Date();    
+      var currentdate = moment.tz(td, "America/Los_Angeles");
+      var enddate = moment("2020-02-24 00:00:00.000");
+      var a = new Date(currentdate._d.getFullYear() + "-" + ("0"+(currentdate._d.getMonth()+1)).slice(-2) + "-" + ("0"+currentdate._d.getDate()).slice(-2) + "T" + ("0"+currentdate._d.getHours()).slice(-2) +":"+ ("0"+currentdate._d.getMinutes()).slice(-2) +":"+ ("0"+currentdate._d.getSeconds()).slice(-2));
+      var b = new Date(enddate._d.getFullYear() + "-" +("0"+(enddate._d.getMonth()+1)).slice(-2) +"-"+ ("0"+enddate._d.getDate()).slice(-2) + "T" + ("0"+enddate._d.getHours()).slice(-2) +":"+ ("00"+enddate._d.getMinutes()).slice(-2) +":"+ ("0"+enddate._d.getSeconds()).slice(-2));    
+      
+      $.holdReady( true );
+      if (test != "true" && ((c == '') || ("2020-02-24 00:00:00.000" == '') || (Date.parse(a) > Date.parse(b)))){
+        $.ajax({
+                  url: "https://flight.deals.allegiant.com/ats/url.aspx?cr=986&wu=21&p=1",
+                  cache: false,
+                  async: false
+              })
+              .done(function(html) {
+                  var resp = JSON.parse(html.substr(html.indexOf("[")));
+                  c = resp[0].campaign;
+                  var rdurl = "https://flight.deals.allegiant.com/ats/url.aspx?cr=986&wu=95&camp="+c;
+
+                  location.qs = {};
+          location.search.substr(1).split("&").forEach(function (pair) {
+              if (pair === "") return;
+              var parts = pair.split("=");
+              location.qs[parts[0]] = parts[1] && decodeURIComponent(parts[1].replace(/\+/g, " "));
+          });
+
+          $.each(location.qs, function(name, value){
+            if (name != 'cr' && name != 'wu' && name != 'camp'){
+              rdurl = rdurl + "&" + name + "=" + value;
+            }
+          });
+
+          if (getUrlParameter('camp') != c) location.href = rdurl;        
+              })
+              .fail(function (jqXHR, textStatus, error) {
+                  console.log("Post error: " + error);
+              });
+      }
+
+      $.getScript( "https://flight.deals.allegiant.com/ats/url.aspx?cr=986&wu=89&camp="+c, function() {
+        $.holdReady( false );
+      });
+    } catch (err) {
+      console.log(err);
+      window.location.href = 'https://www.allegiantair.com/deals/my-deals';
+    }
+  </script>
+  <script type="text/javascript" src="https://flight.deals.allegiant.com/ats/url.aspx?cr=986&wu=90&p=1"></script>
+  <script type="text/javascript" src="https://www.google-analytics.com/analytics.js"></script>
+  <script type="text/javascript">
+  /* https://github.com/js-cookie/js-cookie - modified to not set path */
+  !function(e){var n=!1;if("function"==typeof define&&define.amd&&(define(e),n=!0),"object"==typeof exports&&(module.exports=e(),n=!0),!n){var o=window.Cookies,t=window.Cookies=e();t.noConflict=function(){return window.Cookies=o,t}}}(function(){function g(){for(var e=0,n={};e<arguments.length;e++){var o=arguments[e];for(var t in o)n[t]=o[t]}return n}return function e(l){function C(e,n,o){var t;if("undefined"!=typeof document){if(1<arguments.length){if("number"==typeof(o=g({},C.defaults,o)).expires){var r=new Date;r.setMilliseconds(r.getMilliseconds()+864e5*o.expires),o.expires=r}o.expires=o.expires?o.expires.toUTCString():"";try{t=JSON.stringify(n),/^[\{\[]/.test(t)&&(n=t)}catch(e){}n=l.write?l.write(n,e):encodeURIComponent(String(n)).replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g,decodeURIComponent),e=(e=(e=encodeURIComponent(String(e))).replace(/%(23|24|26|2B|5E|60|7C)/g,decodeURIComponent)).replace(/[\(\)]/g,escape);var i="";for(var c in o)o[c]&&(i+="; "+c,!0!==o[c]&&(i+="="+o[c]));return document.cookie=e+"="+n+i}e||(t={});for(var a=document.cookie?document.cookie.split("; "):[],s=/(%[0-9A-Z]{2})+/g,f=0;f<a.length;f++){var p=a[f].split("="),d=p.slice(1).join("=");this.json||'"'!==d.charAt(0)||(d=d.slice(1,-1));try{var u=p[0].replace(s,decodeURIComponent);if(d=l.read?l.read(d,u):l(d,u)||d.replace(s,decodeURIComponent),this.json)try{d=JSON.parse(d)}catch(e){}if(e===u){t=d;break}e||(t[u]=d)}catch(e){}}return t}}return(C.set=C).get=function(e){return C.call(C,e)},C.getJSON=function(){return C.apply({json:!0},[].slice.call(arguments))},C.defaults={},C.remove=function(e,n){C(e,"",g(n,{expires:-1}))},C.withConverter=e,C}(function(){})});
+  String.prototype.encodeHtmlEntity = function(){return this.replace(/(\W)/g, function(m,d){return '&#'+d.charCodeAt()+';';}).replace(/&#32;/g,' ');}
+  String.prototype.decodeHtmlEntity = function(){return this.replace(/&#(\d+);/g, function(m,d){return String.fromCharCode(d);});};
+  String.prototype.replaceAll = function(search, replacement) { // because str.replace method only replaces the first found occurence
+    var search = search.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1"); //prefixes any regex reserved characters in search string with a \
+    return this.replace(new RegExp(search, 'g'), replacement);
+  };
+
+  var minimumPointBalance = 200;
+  var NoDataForAirportMessage = "Currently there are no scheduled flights from this location. Flights from this location may be seasonal. Please check back later, or select a different airport to view flight deals.";
+  var NoAirHotelDealsMessage = "Currently there are no Air + Hotel deals for flights departing from ";
+  var numUS = new Intl.NumberFormat('en-US');
+
+  function updateHomeAirportCookie(newHAC) {
+    Cookies.set("Pages-AllegiantDeals-HomeAirportCode", newHAC, {expires:180});
+  }
+
+  function getTimeRemaining(endtime) {
+    var tmLoc = new Date();
+    var t = endtime.getTime() - tmLoc.getTime();
+    var seconds = Math.floor((t / 1000) % 60);
+    var minutes = Math.floor((t / 1000 / 60) % 60);
+    var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+    var days = Math.floor(t / (1000 * 60 * 60 * 24));
+    return {
+      'total': t,
+      'days': days,
+      'hours': hours,
+      'minutes': minutes,
+      'seconds': seconds
+    };
+  }
+
+  function initializeClock(endtime) {
+    var clock = document.getElementById('clockdiv');
+    var daysSpan = clock.querySelector('.days>span');
+    var hoursSpan = clock.querySelector('.hours>span');
+    var minutesSpan = clock.querySelector('.minutes>span');
+    var secondsSpan = clock.querySelector('.seconds>span');
+
+    function updateClock() {
+      var t = getTimeRemaining(endtime);
+      if(t.days <= 2){
+        t.hours = t.hours + 24*t.days;
+        t.days = 0;
+        $('#clockdiv .days').hide();        
+      }
+      if (t.hours > 0 && t.hours < 11 && t.days == 0){
+        $(".finalHoursContainer").show();
+      }
+      daysSpan.innerHTML = t.days;
+      hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
+      minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+      secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+
+      if (t.total <= 0) {
+        clearInterval(timeinterval);
+        $('body').addClass('hide-cyber-monday');
+        window.location.href = 'https://flight.deals.allegiant.com/ats/url.aspx?cr=986&wu=95';
+      }
+    }
+    updateClock();
+    var timeinterval = setInterval(updateClock, 1000);
+  } 
+
+  function tmpltPop(template, src){ // populate template
+    if(typeof src !== 'object') return template;
+    var gSrch = new RegExp("{"+"(\\w+)"+"}","gm");
+    return template.replace(gSrch, function(m, key){return src.hasOwnProperty(key)?src[key]:m;});
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.5/dist/js/select2.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    try {
+      if(!window.AirportsDS || !AirportsDS.length) document.write('<pre>Error retrieving Airports data</pre>');
+      if(!window.RoutesDS || !RoutesDS.length) document.write('<pre>Error retrieving Routes data</pre>');
+      if(window.AirportsDS && window.RoutesDS && AirportsDS.length && RoutesDS.length){
+        var Airports = {};
+        var RedirectAirports = {}, Routes ={};
+        for(i=0;i<RoutesDS.length;i++){
+          if(!Routes[RoutesDS[i].orig]) Routes[RoutesDS[i].orig] = [];
+          Routes[RoutesDS[i].orig].push(RoutesDS[i].dest);
+        }
+        for(i=0;i<AirportsDS.length;i++){
+          var a = AirportsDS[i];
+          if(!RedirectAirports[a.airportcode]) RedirectAirports[a.airportcode] = a.redirect;
+          if(!Airports[a.airportcode]){
+            Airports[a.airportcode] = {redirect:a.redirect, name:a.name, routes:(Routes[a.airportcode]?Routes[a.airportcode]:[])};
+          }
+        }
+      }
+
+      var selectedHomeAirport = getUrlParameter("HomeAirportCode") || Cookies.get("Pages-AllegiantDeals-HomeAirportCode") || "CVG";
+
+      if (!selectedHomeAirport || selectedHomeAirport == "undefined" || selectedHomeAirport === undefined || selectedHomeAirport == "ZZZ" || selectedHomeAirport == "" || !RedirectAirports[selectedHomeAirport]) selectedHomeAirport = "CVG";
+      if(RedirectAirports[selectedHomeAirport]) selectedHomeAirport = RedirectAirports[selectedHomeAirport];
+
+      /* set airports array sorted by name for dropdown population */
+      var activeAirportsArray = [];
+      $.each(Airports, function(k,v){ if((k == v.redirect) && v.routes.length) activeAirportsArray.push(v.name+'|'+k); });
+      activeAirportsArray.sort();
+      $.each(activeAirportsArray, function(i,v){
+        v = v.split('|');
+        $('<option value="'+v[1]+'"'+((v[1] == selectedHomeAirport)?' selected':'')+'>'+v[0]+' ('+v[1]+')</option>').appendTo('#airport-select, #input-HAC');
+      });
+
+      $('#departingLocation').text(Airports[selectedHomeAirport].name);
+
+      var activeTab = getUrlParameter("activeTab");
+      var destLinksSelect2, airportsSelect2;
+      var hotelDealsFound = !!hotelDealsDS.hotelsOrder.length,
+      flightDealsFound = !!flightDealsDS.length;
+      var hotelOnlyPromo = (hotelDealsFound && !flightDealsFound);
+      var singleTab = !(hotelDealsFound && flightDealsFound);
+      var dealsFound = (hotelDealsFound || flightDealsFound);   
+
+      var cd = "";
+      if (cd == '1'){ 
+        var t = "2020-02-24 00:00:00.000", pc = "";
+        var fb = "", ft = "", fh = "";
+        var pst = moment.tz(t, "America/Los_Angeles");
+        var localtz = pst.clone().tz(moment.tz.guess());
+        initializeClock(new Date(localtz.format()));  
+
+        $("body").css({
+          "background-image": "url('')",
+          "background-size": "100% auto",
+          "background-attachment": "fixed"});
+
+        if (fb != '') $(".mainFooter, .disclaimerRow").css("background-color", fb);
+        if (ft != '') $(".menu-item, .disclaimerRow").css("color", ft);
+        if (fh != '') $(".no-link, .copyright").css("color", fh);
+        else $(".no-link, .copyright").css("color", "#01579b");
+
+        if (pc == '2'){
+          $(".promo3col").hide();
+          $(".promo2col").show();
+        }
+        else if (pc == '3'){
+          $(".promo2col").hide();
+          $(".promo3col").show();
+        }
+
+        if (parseInt($(".hours>span").text()) < 24){
+          $(".promoSize").css("padding-top", "17px");
+        }
+        $(".promoHeader").show();
+      }
+
+      if(dealsFound) {
+        var hotelsDestinationContainerTemplate = $('.hotel_deal_template > .default-deal-module-wrapper').html();
+        $('.hotel_deal_template > .default-deal-module-wrapper').remove();
+        var hotelDealTemplate = $('.hotel_deal_template').html();
+        $('.hotel_deal_template').remove();
+        var flightDealTemplate = $('.flight_deal_template').html();
+        $('.flight_deal_template').remove();
+
+        // find the lowest priced deal
+        var lowestDeal = flightDealsDS[0] || {};
+
+        //populate FlightDeals
+        for(var i=0;i<flightDealsDS.length;i++){
+          var fd = flightDealsDS[i];
+          if(fd.featured=='1') {
+            fd.featured = ' featured';
+            if(c == '20200211_DestDeals' || c == '20200213_ThursdayDeals') {
+              fd.featured += ' new-route';
+            }
+          } else {
+            fd.featured = '';
+          }
+          fd.pcHeaderContent = '';
+          $(tmpltPop(flightDealTemplate, fd)).hide().addClass((fd.origin == selectedHomeAirport)?"visibleDeal":"invisibleDeal").appendTo('#flight-deals-AJAX');
+
+          // check if it's the lowest price
+          if(+fd.price < +lowestDeal.price) {
+              lowestDeal = fd;
+          }
+        }
+
+        $('#dealsLoadingText').remove();
+        $('.flight-deal-card-container.visibleDeal').show();      
+
+
+        // populate disclaimer
+        var disclaimerData = {
+          price: lowestDeal.price,
+          origin: lowestDeal.originCityState+' ('+lowestDeal.origin+')',
+          destination: lowestDeal.destinationCityState+' ('+lowestDeal.destination+')',
+          start_travel_date: lowestDeal.starttraveldateM_d_yyyy,
+          end_travel_date: lowestDeal.endtraveldateM_d_yyyy,
+        }
+        if(window.enddate === undefined) {
+            window.enddate = moment("2020-02-24 00:00:00.000");
+        }
+        disclaimerData.campaign_end_date = enddate.format('MMMM D, Y');
+
+        var disclaimerTemplate = '\
+          † Qualifying itineraries can be canceled within 24 hours of booking, provided the scheduled time of departure was at least one week (168 hours) away at time of booking. Otherwise, all purchases of travel, hotel, auto, activities or services, baggage and seat fees, related booking fees, carrier charges, and taxes are non-refundable.<br>\
+          ‡ Exact duration of flight may vary and is subject to change.<br>\
+          *Airfare prices are per segment, include taxes, carrier charges &amp; government fees. ${price} fare is available from {origin} to {destination} departing between {start_travel_date} and {end_travel_date}. Seats are limited and fare is not available on all flights. Must be purchased by {campaign_end_date}. Travel dates and fares are limited. A $14.99 per passenger, per segment fee applies to all bookings made through the Allegiant call center. Optional baggage charges may apply. Fare rules, routes and schedules are subject to change without notice. Restrictions apply. Not valid on previously purchased itineraries.\
+        ';
+
+        if($.trim($('#disclaimerText').text()) == '') {
+          $('#disclaimerText').html(tmpltPop(disclaimerTemplate, disclaimerData)).show();
+        }
+
+
+        //populate HotelDeals
+        var hotelDestinationsForHAC = [];
+        var destLinksContainer = $('<select id="destLinksContainer">');
+        var ddmw = $('<div class="default-deal-module-wrapper"/>').appendTo('#hotel-deals-all-AJAX');
+        for(var i=0;i<hotelDealsDS.hotelsOrder.length;i++){
+          var d = hotelDealsDS.hotelsOrder[i];
+          var containerDS = hotelDealsDS[d];
+          var hotelsDestinationContainer = $(tmpltPop(hotelsDestinationContainerTemplate, containerDS)).hide().appendTo(ddmw);
+          var ldc = hotelsDestinationContainer.find('.locationDealsContainer');
+          for(var j=0;j<containerDS.deals.length;j++)
+            $(tmpltPop(hotelDealTemplate, containerDS.deals[j])).appendTo(ldc);
+          if(~$.inArray(d, Routes[selectedHomeAirport])){
+            hotelDestinationsForHAC.push(d);
+            $('<option data-ac="'+d+'" value="#AC_'+d+'">'+containerDS.cityState+'</option>').appendTo(destLinksContainer);
+          }
+        }
+
+        $('<div id="destSelectContainer" title="select a destination">').prependTo('#tabSection2').append('<span class="destSelectLabel">Select a destination</span>').append(destLinksContainer);
+
+        var deepLinkTo = getUrlParameter('dlac').toUpperCase();
+        if(!(deepLinkTo && ~hotelDestinationsForHAC.indexOf(deepLinkTo))){
+          if(hotelDestinationsForHAC.length) deepLinkTo = hotelDestinationsForHAC[0];
+          else deepLinkTo = false;
+        }
+        if(deepLinkTo) {
+          $('option[value="#AC_'+deepLinkTo+'"]', destLinksContainer).attr('selected', true);
+          destLinksContainer.val('#AC_'+deepLinkTo);
+        }
+
+        $('.hotelOrigin').hide();
+        var activeHotelDest = destLinksContainer.val();
+        if(activeHotelDest) $(activeHotelDest).addClass('active').fadeIn();
+
+        if (hotelDestinationsForHAC.length) $(".fromHomeAirportText").text("Air + Hotel deals departing from "+Airports[selectedHomeAirport].name);
+        else $(".fromHomeAirportText").html('<span style="font-size: 0.75em;margin-top: 2rem;display: block;">'+NoAirHotelDealsMessage+Airports[selectedHomeAirport].name+'</span>');
+
+        var oacContainers = $('.orig_'+selectedHomeAirport);
+        if(!oacContainers.length){
+          var ndfaDiv = '<div class="flight-deal-card-container orig_'+selectedHomeAirport+'">'+NoDataForAirportMessage+'</div>';
+          $("#flight-deals-AJAX").append(ndfaDiv);
+        }
+
+        if(!singleTab){
+          $('.tab-nav-wrapper-inner').addClass('large-6 large-pull-6').show();
+          $('.signUpContainer').addClass('large-6 large-push-6');
+          if (activeTab == 'bundle'){
+            $('.tab-item[data-tabsection="tabSection2"]').addClass("active");
+            $('#tabSection2').addClass("active").show();
+          }
+          else {
+            $('.tab-item[data-tabsection="tabSection1"]').addClass("active");
+            $('#tabSection1').addClass("active").show();
+          }
+        }
+        else{
+          $('.tab-nav-wrapper-inner').hide();
+          if(hotelOnlyPromo) $('#tabSection2').addClass("active").show();
+        }
+
+        if (window.innerWidth <= 480) $('#input-email').attr("placeholder", "Enter your email to receive deals!");
+      }
+      if(!dealsFound) alert('no data found for flight deals or hotel deals');     
+
+      function validEmail(email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+      }
+
+      // EVENTS
+      var GAcampaign = getUrlParameter("utm_campaign"),
+        GAcontent = getUrlParameter("utm_content"),
+        GAsource = getUrlParameter("utm_source"),
+        GAmedium = getUrlParameter("utm_medium"),
+        CDmessage = getUrlParameter("mg"),
+        CDcampaign = getUrlParameter("cn"),
+        timeParam = getUrlParameter("time"),
+        cmnParam = getUrlParameter("cmn");
+      var passOnUrlParams = [];
+      if(GAcampaign) passOnUrlParams.push("utm_campaign="+GAcampaign);
+      if(GAcontent) passOnUrlParams.push("utm_content="+GAcontent);
+      if(GAsource) passOnUrlParams.push("utm_source="+GAsource);
+      if(GAmedium) passOnUrlParams.push("utm_medium="+GAmedium);
+      if(CDmessage) passOnUrlParams.push("mg="+CDmessage);
+      if(CDcampaign) passOnUrlParams.push("cn="+CDcampaign);
+      if(timeParam) passOnUrlParams.push("time="+timeParam);
+      if(cmnParam) passOnUrlParams.push("cmn="+cmnParam);
+
+      if(passOnUrlParams.length){
+        $('body').on('click', 'a', function (e) {
+          if($(this)[0].hasAttribute("href")){
+            $(this).attr('href', function() {
+              if (!~this.href.indexOf("utm_") && !~this.className.indexOf("no-link") && !~this.className.indexOf("no-utm")){
+                var hrefArray = this.href.split('#');
+                var connChar = (~hrefArray[0].indexOf("?"))?'&':'?';
+                hrefArray[0] += connChar+passOnUrlParams.join('&');
+                this.href = hrefArray.join('#');
+              }
+              if (~this.className.indexOf("no-link")) return;
+              return this.href;
+            });
+          }
+        });
+      }
+
+      ga('set', 'dimension1', selectedHomeAirport);
+      ga('send', 'pageview'); 
+
+      if(getUrlParameter('jk')) $(window).on('keyup', function(e){ // for testing
+        if(e.ctrlKey && ((e.keyCode || e.which)==118)) $('.fullWidthHeroSection').toggleClass('disabled');
+        if(e.ctrlKey && ((e.keyCode || e.which)==119)) $('body').toggleClass('cardholder');
+      });
+
+      $('.tab-item').on('click keypress', function(e) { // for keyboard nav (accessibility)
+        if ((e.type == "keypress") && !((e.which == 32) || (e.which == 13))) return true; // ignore and let bubble
+        e.preventDefault();
+        var tab = $(this);
+        var dataSection = $("#" + tab.data("tabsection"));
+        var updatesMade = 0;
+        if (e.type != "keypress") tab.blur();
+
+        if (!tab.hasClass('active')) {
+          tab.siblings(".tab-item").removeClass("active");
+          tab.addClass("active");
+          updatesMade++;
+        }
+        if (!dataSection.hasClass('active')) {
+          dataSection.siblings(".tab-section").removeClass("active");
+          dataSection.addClass("active");
+          updatesMade++;
+        }
+        if (updatesMade) ga('send', {hitType: 'event', eventCategory: 'Change Tab', eventAction: 'click', eventLabel: tab.text()});
+      });
+
+      $(".mobileNavLink").click(function() {
+        var size = window.innerWidth;
+        var navActive = $(".mainNav").hasClass("active");
+
+        if (size < 641) {
+          if (navActive) {
+            $(this).children(".menuIcon").removeClass("active");
+            $(".mainNav").removeClass("active");
+            $(".mainNav").slideUp();
+          }
+          else {
+            $(this).children(".menuIcon").addClass("active");
+            $(".mainNav").addClass("active");
+            $(".mainNav").slideDown();
+          }
+        }
+        else if (size < 960) {
+          if (navActive) {
+            $(this).children(".menuIcon").removeClass("active");
+            $('#navMenu2').slideUp();
+            $(".mainNav").removeClass("active");
+          } else {
+            $(this).children(".menuIcon").addClass("active");
+            $('#navMenu2').slideDown();
+            $(".mainNav").addClass("active");
+          }
+        }
+      });
+
+      $(window).on("resize", function() {
+        var size = window.innerWidth;
+        $(".mobileNavLink").children(".menuIcon").removeClass("active");
+
+        if (size >= 960) {
+          $(".mainNav").css("display", "");
+          $('#navMenu2').css("display", "");
+        }
+        else if (size > 640) {
+          $('#navMenu2').slideUp();
+          $(".mainNav").removeClass("active");
+          $(".mainNav").css("display", "");
+        }
+        else {
+          $(".mainNav").removeClass("active");
+          $(".mainNav").slideUp();
+          $('#navMenu2').css("display", "");
+        }
+      }).resize();
+
+      $("a.has-dropdown").click(function(e) {
+        e.preventDefault();
+        var SubID = '#' + $(this).data("submenuid");
+        $(SubID).toggleClass('visible');
+        $('li.menu-item.has-dropdown a').toggleClass('active');
+        return false;
+      });
+
+      // Subscribe widget ------------------------------
+      var WebCollectSource = "Web Form - Deals Page Signup", signUpEmail, signUpStatus, signUpPosttype, char;
+      var signupAjaxURL = "https://deals.allegiant.com/ats/post.aspx?cr=986&fm=22";
+
+      $('#email-sign-up').submit(function(event) {
+        event.preventDefault();
+        signUpEmail = $('#email-sign-up #input-email').val().trim();
+
+        if (!signUpEmail) {
+          $('#input-email').focus();
+          return false;
+        }
+        if (!validEmail(signUpEmail)) {
+          $('#input-email').css('box-shadow', 'inset 0 0 10px red').focus();
+          return false;
+        } else $('#input-email').css('box-shadow', 'initial');
+
+        //$('#email-sign-up-2 #input-HAC').val(selectedHomeAirport);
+
+        $.post(signupAjaxURL, {
+          s_email: signUpEmail,
+          s_environment: 'prod',
+          s_homeairportcode: selectedHomeAirport,
+          s_ms_orig_src: WebCollectSource,
+          s_ms_update_src: WebCollectSource
+        }, function(response, status) {
+          console.log(response);
+        });
+
+        $(this).fadeOut(400, function() {
+          $('#email-sign-up-2').fadeIn(400, function() {
+            $('#email-sign-up-2 #input-HAC').focus();
+          });
+        });
+
+        ga('send', {
+          hitType: 'event',
+          eventCategory: 'Email Sign-up',
+          eventAction: 'submit',
+          eventLabel: GAcampaign
+        });
+
+        return false;
+      });
+
+      $('#email-sign-up-2').submit(function(event) {
+        console.log("submit-2");
+        event.preventDefault();
+
+        signUpHAC = $('#email-sign-up-2 #input-HAC').val();
+        updateHomeAirportCookie(signUpHAC);
+
+        $.post(signupAjaxURL, {
+          s_email: signUpEmail,
+          s_environment: 'prod',
+          s_homeairportcode: signUpHAC,
+          s_ms_orig_src: WebCollectSource,
+          s_ms_update_src: WebCollectSource
+        }, function(response, status) {
+          console.log(response);
+        });
+
+        $(this).fadeOut(400, function() {
+          $('.email-form-status').fadeIn(400);
+          setTimeout(function() {
+            $('.email-form-status').slideUp(400);
+          }, 3000);
+        });
+
+      });
+      // End Subscribe Widget
+
+      $('#airport-select').select2({
+        minimumResultsForSearch: 20,
+        placeholder: {
+          id: 'ZZZ',
+          text: 'Please select your home airport'
+        }
+      }).on('select2:select', function(evt) {
+        //console.log('#airport-select select2:select', evt);
+        var selectedHomeAirport = evt.params.data.id;
+
+        updateHomeAirportCookie(selectedHomeAirport);
+
+        ga('set', 'dimension1', selectedHomeAirport);
+        ga('send', {
+          hitType: 'event',
+          eventCategory: 'Update Home Airport',
+          eventAction: 'select',
+          eventLabel: selectedHomeAirport
+        });
+
+        var oacContainers = $('.orig_'+selectedHomeAirport);
+        if(!oacContainers.length){
+          var ndfaDiv = '<div class="flight-deal-card-container orig_'+selectedHomeAirport+'">'+NoDataForAirportMessage+'</div>';
+          $("#flight-deals-AJAX").append(ndfaDiv);
+        }
+
+        $('#departingLocation').text($('#airport-select option[value="' + selectedHomeAirport + '"]').text());
+
+        $('.flight-deal-card-container.visibleDeal').removeClass("visibleDeal").addClass("invisibleDeal");
+        $('.flight-deal-card-container.orig_'+selectedHomeAirport).removeClass("invisibleDeal").addClass("visibleDeal");
+
+        $(".invisibleDeal").fadeOut().promise().done(function(){$(".visibleDeal").fadeIn();});
+
+        var dest = Routes[selectedHomeAirport];
+
+        $('.hotelOrigin').hide().removeClass("active");
+
+        //$("#destLinksContainer").empty(); //.html('');
+        //console.log('destLinksContainer',destLinksContainer)
+        destLinksContainer.empty();
+
+        hotelDestinationsForHAC = [];
+
+        for(var i=0;i<hotelDealsDS.hotelsOrder.length;i++){
+          var d = hotelDealsDS.hotelsOrder[i];
+          var containerDS = hotelDealsDS[d];
+          if(~$.inArray(d, Routes[selectedHomeAirport])){
+            hotelDestinationsForHAC.push(d);
+            $('<option data-ac="'+d+'" value="#AC_'+d+'">'+containerDS.cityState+'</option>').appendTo(destLinksContainer);
+          }
+        }
+
+        if(hotelDestinationsForHAC.length){
+          var activeHotelDest = '#AC_'+hotelDestinationsForHAC[0];
+          $('option:selected', destLinksContainer).attr('selected', false);
+          $('option[value="'+activeHotelDest+'"]', destLinksContainer).attr('selected', true);
+          destLinksContainer.val(activeHotelDest);
+          $(activeHotelDest).addClass('active').fadeIn();
+          $(".fromHomeAirportText").text("Air + Hotel deals departing from "+Airports[selectedHomeAirport].name);
+        }
+        else $(".fromHomeAirportText").html('<span style="font-size: 0.75em;margin-top: 2rem;display: block;">'+NoAirHotelDealsMessage+Airports[selectedHomeAirport].name+'</span>');
+
+        //$("#input-HAC").val(selectedHomeAirport);
+        $("#input-HAC option[value='"+selectedHomeAirport+"']").prop('selected', true);
+      }).on('select2:close', function() {
+        var _curInst = $(this);
+        _curInst.data('select2').justClosed = true;
+        setTimeout(function() {
+          _curInst.focus();
+        }, 100);
+        setTimeout(function() {
+          _curInst.data('select2').justClosed = false;
+        }, 500);
+      }).data('select2').listeners['*'].push(function(name, target) {
+        //console.log(name);
+        if (name == 'focus') {
+          var _curInst = this;
+          //console.log('onFocus', this, this.isOpen(), this.justClosed);
+          if (!this.isOpen() && !this.justClosed) setTimeout(function() {
+            if (!_curInst.isOpen()) _curInst.open();
+          }, 250);
+        }
+      });
+
+      //destLinksSelect2 = $('#destLinksContainer').select2({ // hotel tab destinations dropdown
+      destLinksSelect2 = destLinksContainer.select2({
+        minimumResultsForSearch: 20
+      }).on('select2:select', function(evt) {
+        var section = $(evt.params.data.id);
+        if (section.hasClass('active')) return false;
+        var currentlyActive = $('.hotelOrigin.active');
+        if (currentlyActive.length)
+          currentlyActive.removeClass('active').fadeOut(function() {
+            section.addClass('active').fadeIn();
+          });
+        else section.addClass('active').fadeIn();
+      }).on('select2:close', function() {
+        var _curInst = $(this);
+        _curInst.data('select2').justClosed = true;
+        setTimeout(function() {
+          _curInst.focus();
+        }, 100);
+        setTimeout(function() {
+          _curInst.data('select2').justClosed = false;
+        }, 500);
+      }).data('select2').listeners['*'].push(function(name, target) {
+        if (name == 'focus') {
+          var _curInst = this;
+          //console.log('onFocus', this, this.isOpen(), this.justClosed);
+          if (!this.isOpen() && !this.justClosed) setTimeout(function() {
+            if (!_curInst.isOpen()) _curInst.open();
+          }, 250);
+        }
+      });
+
+      // Links click events
+      $('body').on('click', '.hotelBookNow', function (e) {
+        $(this).attr('href', function() {
+          return this.href + '&FL_dair=' + $("#airport-select").val() + '&FL_aair=' + $("#destLinksContainer").val().substr(4, 3);
+        });
+      });
+
+      $('.logoInner a').on('click keypress', function(){
+        ga('send', {hitType: 'event', eventCategory: 'Deals Top Logo', eventAction: 'click', eventLabel: 'allegiant.com'});
+        return;
+      });
+
+      $('.navList a').on('click keypress', function(){
+        var label = $.trim($(this).text());
+        ga('send', {hitType: 'event', eventCategory: 'Deals Top Menu', eventAction: 'click', eventLabel: label});
+        return;
+      });
+    } catch (err) {
+      console.log(err);      
+      window.location.href = 'https://www.allegiantair.com/deals/my-deals';
+    }
+  });
+
+  </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.5/dist/css/select2.min.css">
+  <link rel="stylesheet" href="https://i.e.allegiant.com/wpm/986/G4/p/common/css/normalize.css" />
+  <link rel="stylesheet" href="https://i.e.allegiant.com/wpm/986/G4/p/common/css/cssloader7.css" />
+  <link rel="stylesheet" href="https://i.e.allegiant.com/wpm/986/G4/p/common/css/f6-buttons.css" />
+  <link rel="stylesheet" href="https://i.e.allegiant.com/wpm/986/G4/p/common/css/f6-grid.css" />
+  <link rel="stylesheet" href="https://i.e.allegiant.com/wpm/986/G4/p/common/css/f6-util.css" />
+  <link rel="stylesheet" href="https://i.e.allegiant.com/wpm/986/G4/p/common/css/DealsPageBase.css" />
+  <link rel="stylesheet" href="https://i.e.allegiant.com/wpm/986/G4/p/common/css/fonts/Montserrat.css" />
+  <link rel="stylesheet" href="https://i.e.allegiant.com/wpm/986/G4/p/common/css/fonts/Humnst777.css" />
+  <style type="text/css">
+    a.logoLink{
+      display: inline-block;
+      width: 15%;
+      height: 70px;
+      padding-left: 12px;
+      vertical-align: middle;
+      line-height: 70px;
+    }
+    @media (max-width: 60em){
+      a.logoLink{
+        height:50px;
+        line-height:50px;
+      }
+      a.logoLink img{
+        height: 35px;
+      }
+    }
+    @media (max-width: 40em){
+      a.logoLink{
+        width: 40%;
+      }
+    }
+    a.flight-deal-card-container{
+      text-decoration: none;
+      overflow: visible !important;
+      color:inherit;
+    }
+    .default-deal-module-wrapper{padding: 0 0.975rem;}
+
+    .strikethrough .pc-header-warning{
+      margin-bottom: 1.5em;
+    }
+    .strikethrough .pc-price-strikethrough:before{content:'$';}
+    .strikethrough .pc-price-strikethrough{
+      text-decoration: line-through;
+      text-decoration: line-through solid #01579b;
+      font-size: 1.3em;
+      font-weight: 600;
+      color:#a3b5c3;
+      color:#7d91a0;
+      width:30%;
+      display:inline-block;
+      text-align:right;
+      vertical-align: middle;
+      margin: 0 2%;
+    }
+    .strikethrough .pcpst-subtext{display: none;}
+    .strikethrough .pc-price{
+      font-size: 3em;
+      width:60%;
+      display:inline-block;
+      text-align:left;
+      vertical-align: middle;
+      margin: 0 2%;
+    }
+    /*
+    .fullWidthHeroSection {
+      padding-top: 0;
+      background-position: center top;
+      background-image: none;
+    }*/
+    .threePieceHeader {margin-bottom: 1em;}
+    .disclaimerRow{background-color: #ffffff;margin:0;}
+    .disclaimer {
+      font-size: 0.75rem;
+      max-width: 62.5rem;
+      margin: 0 auto;
+      padding: 1em;
+    }
+    .fromHomeAirportText {
+      color: #01579b;
+      margin: 8px 0;
+    }
+    #hotel-deals-all-AJAX{min-height: 300px;}
+    #email-sign-up input[type="email"]{margin-right: -42px;}
+    .hotelBookNow{padding-left: 0 !important;padding-right: 0 !important;}
+    .tab-nav-wrapper-inner {display: block;}
+    .pc-header-warning{
+      color: #FDFDFD;
+      background-color: #ce0c26;
+    }
+    .pc-header-warning:after {
+      content: "Limited seats at this price";
+    }
+    .inlineImg{
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: inline-block;
+      min-width: 2em;
+      height: 1.8em;
+    }
+    .my{
+      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAMAAAANIilAAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAACTUExURQAAAP+DAP+DAP+BAP6GBfl/C/+DAPuAB/+DAP+DAfB5Ff+DAPyABud0IOl0HvF6FOZyIv+DAP+DAN5uLP////i+jeJ3NP/8+PB5FP/37/CgZPOsc/zQqO2XWf/x4va0gOiISPzIl+VyI/7n0P7fweqQUuV/PPZ9C/+GB/7cuN9xLv/Bfv+1Zv+NE/+VJ+NxJf+sVJNM/I8AAAASdFJOUwDWuEUJcz4WyZ0q617iuojv9lVF5uUAAAL8SURBVEjHnZfbeqowEIUVQcBT2ySQciioCAqo+P5PtzPhFBAw7Lmo1I+fmbVmiMliMRjqWjON7Q9CP1vD1NbqQjp0zUC9MDRdCl0raDCU9WfUQKNhTOMbBU2Gshlnd+hj7EZQ1UQSYQ46ry+RVCz1/2eHaH2LpGPbo1UDzQijq9tEs8Kc2aPRjulodrSyFXnocX92C19Jo7ecEvfKL+s5l+rwDf7khBAPc3opn/geOQn7OHG4pFeSih8pIRY+NzCnFUmr74z5w4yGskNc0WC4NpHxlKY5c9cnxMkYcr7XMNAag4cG88HtuUXsXhJc0YWQiCNuAzPaYFM9gMLNr1IhC/saEOJzIiYgvqbVntc8Y8qZ55P4CeQ+YkrI6Q3G19XiS0BfKc1Le1i80sDGIbuI7QZxRRibwvv0ZNWSHD0cagVwBer+wOekQawO/C2MF8+YM6Uev8mhNsZHgI8NAipODVws2hXkCfD9QS8Ye3DJPnHSgUGyAOOFINkBpTmMA2jjPbHrsrnblwkYlL6cqDKGuVzBdlWGR5x0Evb57IJPfKY4DK1iBriUeKdJmNvEYchVauY++T5ltVtdeNuFS3FxrY27zc2Hx2XQd0twe9mD3Rr2atjDCeWPZTWFzWxz2OyVndVM8xSW0A1I4FVT4gpDonVbVb4AZbXVxSXBOLNxPWLHBj6IL4ZT52vhLI3CrHUI+8Rp/9HEVxKUJbhTdh2xh6v5TNsvdXExAMnl13YUWXZ7V3Yq7cM2FZ5ZiMvQjdQLRj/8ug42Y7YgWVwAqdgHMWjVODsQb9h0lt67FQ+yOCjnzb6QoE18LndPTerfYRbKJr4bBoTGotc8jE90TMv5dIQOFO8/dCO0ByNA/SN+S9zZF4zQSRi6ifjF9+CP+5juXghbwdVc+mtsQyNB78e3Uh/por8RW8rThT65fZyki4F9s6rI0Wf945Z5lN6rEpv1X4ke9YR/mLX9RvaA8kafdzOORl260OYdylr6fNjIH+rK4yDQRbE/jB3n/gF5vN/B2qR0sAAAAABJRU5ErkJggg==');
+    }
+    .awmc{
+      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAeCAMAAABdem3zAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAMAUExURQttrABsqwBurABqq8jc6ARpqgBqqiJ4sTqEtUKMvgBvrAB1scje6nOp0YSy1d3n7ABxrqHE35TC4rHP5tnl7ABpqQF6tczg68nV3dXm75nF5M3e6t7p8OLt9E6UxrTR5Wqkzo+dqK7C0ZG62Yq22GOdyr7Z58Tc6aXM5wR+uODs8lWXyIiXpa6ytqmtsb3L1ZigpsLa6aCtt1ubybrW6JzB3hmDu7nDzM7j8b/P2p/H5LfS6K3L49Di7XqduLfH0ajJ4tHm8ez0+dPh6avM5eTq7qG1xsrh7srX4cXR29Da4PAWISOFvdDQ0RV4snus0jyOwbPAyXmu1FGSw26mz6XH4UmRxABoqQVmpL3W6kmLup2/16Swu6OorKq4w5akr7fY8Zm0x4GUoSyIvit+taS7zsjKy0SIu4q53Dt4o9Tk7Mbe6sPc79De5unu8PIMFIKNmZSpur/i9uDj5cTN1L/J0P2XCKXG2PN2IHCSq5ecobS5vmWZwPykGdfc332nxJ2osKm1vTaLwTaBtE+PwNDh6j9+q8rb58PW4b/S38bY5Za3zgBeoYG23f3//0uCqoWov3yx2f2dDY+hsH2Ei5Wvxau6yru9v/yiIdbf5lWDpo6Um9nX1LHH2EFvjz+FskZ+pl6OsMjBvG2WtT1ymEWNwBRtqJW92W+jyo+939Pt+mygx9n2/UBESO4dJl1ma/f6+r7FxN/LyBFkm7bV525/jejRq+rWw1ZugWmFmlmPt16LqsnS14+qv256gJ+gotLW2Rlfjb7O0pCyyunw9be3t8LAuylxpJzM64+10MXd8MHu+rfO39aOk1FXXCNzqa7W8O/f0ff08VOg0+Lm6dTMrvEqH/ZgEWN5im5ta2xnXPFPI/qNFkBke2Ck1H6LjrJ8Vs/Oxe4oL+iWdktpfPiwM4OYqFJ4lVRmbi5tmgx3sg1Tit6ztObn5snAtOGzbOG8hiFXdyM8TOK1br+KU8KdedF4KbFkIZ6IdPA3PMl3LvjOBIuhjZhgMcO0t9/y96RLe5cAAAAKdFJOU9n////I/v+CMYAweMMeAAAFIElEQVQ4y2PgYBAVZRNlAwFRNmZmZjYoEBUVZcMC2BkYRBnhPObw8HCEFrARGNoYGLmYoICRefPdF3c3izJjMRihj4GLi0tAQCAiAqgx4sWvim+3NjMyMYUzMzIyAu2C6GVGdimDgAA3U0/E6vrzPcwH/5b9nvT9Y09PxLJlTEwQmxkhgAmkH6yPwc9PoLl8VqrnrPr5S47e/7Nv0Ty7ejv+/ggBEOCCAZBONtFwoC6GlJRlu2YqJU6z93JLtUudutBZaVqckvlrLm4U8MrPzy8lJYWNiYmhufn8YYnUxNS9XpV2SkpT53ooTaicYHmcW1NTUwwCQKyA5bwKxrwr2AQEGKKi0tv6MzMzX/YvWDxz6pIFuxf0t2W2NScnJ/v4mJmZ+fgkNwUsDVu6NKAJyBMT42aIagluiUpfujQsPX3X4syaFTWrV6saBwfLQYG2traxqoLqClVV7bAmHzNNTYaWluDgsMONijqKjYmqmZkqGSp8fHz+vCG8vAoKQMLf35+Pb+XUqSp8/iFAPQHJDMFAI7TjFx1Ne7jIqLf+ySyXUEFTZRUVFWVTQWVl5eWmpoKhNm4xwsIOQFE+oEcYgDaqGhf6Tj+QNsdootSPW5UW1g6CpoKCgjbW1vLC8gk5XbkzSzw8LDvUhQWVgVYzKADBvcmLps/xPRbvknDswc3FWYaRkSYmkZGnpJ35tbZv79Oy3VBsdG59xynhUKAlDEB38vIWxu7fr7ffSMPhwtcH60O02tsdRfjfXry0QfbSh6tbzrj26RlslAh0y7G2cQhl4A0KmsgnZOUiLLhSSCg04eqXG35Nrhsubtu+6Z1Hd82Eml0LEy09PT3Np8XrWEQKOwgyBE3szTBVUioH2sbXreEwYeH8qPl1xWlpJYGNhYsr7XYXTnObbDRZpyCpwNzC0FrYhSEDCKR09iYpRhdGz1aKfr5v64KXO5P09PVj9aqn+1ZVTdFJ2npfxyDGQCJWP8fE2prBxsYmVGOqYrdioqKiYnmkuuLOrfN2HLzhFqg3u2D9lCkFU8wlvHSrdXX1JAz03Q0N1RgErUyFhE6elBJa3h2dKpyQ4+6Vu8do5459RrufzK42r7tywMnJSUZij7iEhKWFhbS0NAPQq0JCUkB04oTGhQThuXOV4uOc825+8rm8dm1fH1C1rIyMzBqtTcVr+Oc4rxIRYbCyspKS0tAAEtHRiTpulh6xuhvTvObsODhv7TmnI7JaWjIyImvePMpf9/jppBnbVokwqKkbGorzzbXUt5TI9fKSkdGarqdbGqt7VK8gPpYfaLpIlq2jr3e+97Xrd2onlT0sYpA32WJi6CCf7e7uDsTi4o76Rg2etlntQK25ko624jzq6qfP5q/zvl1RUTuj7H0Rg5WGhouw/JYt8mpq6urZ6jzZPBbi4uK2klmSkpJZtq3iPDw8SBo+FzGAVJvEGzUYNBrYx7lXNcYZxMXEGLgDNQOBuqEaEBQdgjtpYwID0GQ1dSV7e31L+45AS/tAc3sPz1JzR0dJ5yzn1qzWVmnpVulVm356P3r8tHbGtqJ2hlxTQQeR0kajBj1F3briPXsOeJZ4dpWUmJe2iwABv4hrnrPzzEOH/lWXBx5LC6yTYQgKCgrpnfV8yZJ5Ncb1ds/sKnX0jCbvrXqm0yXC78qflyct7crf2ZCUFDu7usGgSl+LgTMsIEBufpvdwqh7E5VKgS7L3VPne8W3mN+jo0vkTKdIe5erq7yGhTyP1pEjsuJ5LADzIsIUX5gplAAAAABJRU5ErkJggg==');
+    }
+    .awmc {
+      width: 3.4em;
+      height: 2em;
+    }
+    .cardholderInfoHeader{
+      display:none;
+      color: #f0f0f0;
+      font-size: 0.8em;
+    }
+    .cardholder .cardholderInfoHeader{display:block;}
+    .cardholder .fullWidthHeroSection {
+      font-family: Montserrat, Verdana, sans-serif;
+    }
+    .cardholder .infoHeaderContainer{
+      background-color: rgba(45, 45, 45, 0.75);
+        box-shadow: 0 1px 4px rgba(50,50,50,0.5);
+      margin-bottom: 0.5em;
+      font-family: Montserrat, Verdana, sans-serif;
+    }
+    .cardholderInfoHeader * {
+      vertical-align: middle;
+    }
+    .cardholder .pc-price {
+      color: #eb7223;
+    }
+    .line1{color: #ce0c26;}
+    .line2, .pc-usp {color:#1e8200;}
+    .cardholder .line1>span{display:none;}
+    .cardholder .line1:before{
+      content:'BIG Savings! Redeem your points today!';
+      font-weight: bold;
+      color:#dc691f;
+    }
+    .cta-container .button.continue{color:#FDFDFD; background-color:#1e8200;}
+    .cardholder .line2{font-weight: bold;}
+    .cardholder .flight-deal-card .route-price-card{
+      overflow: visible;
+    }
+    .cardholder .pc-header-warning{
+      background-color: #01579b;
+      font-size: 0.75em;
+      height:26px;
+      text-transform: none;
+      font-family: inherit;
+    }
+    .cardholder .pc-header-warning:after {
+      content: '';
+    }
+    .pc-header-warning>div{display: none;}
+    .cardholder .pc-header-warning>div{
+      display: block;
+      position: absolute;
+      top: -6px;
+      left: 0;
+      text-align: center;
+      width: 100%;
+    }
+    .cardholder .pc-header-warning>div * {
+      vertical-align: middle;
+    }
+    .cardholder .pc-header-warning .my{
+      width: 2.4em;
+      height: 2.6em;
+      top: -3px;
+    }   
+    .tabs-content-column {
+        padding-top: 0.75em;
+    }
+    #destLinksContainer{width:400px;}
+
+    .promoHeader{
+      display:none;
+    }
+    .fullWidthHeroSection{
+      margin-bottom: 0;
+      padding-top: 0.5em;
+    }
+    .fadeToWhite{display: none;}
+    /*
+    body{
+      background-image: url('https://snamwpm.eccmp.com/wpm/986/G4/p/2018/05/72hrSale/72HourStrikethruFareSale_20180515_1600x1200.jpg');
+      background-size: 100% auto;
+      background-attachment: fixed;
+    }   
+    .fullWidthHeroSection>.row{
+      max-width:1200px;
+      position: relative;
+      overflow:auto;
+    }
+    .fullWidthHeroSection>.row>.columns{}
+    */
+    .headerTitle{
+      font-size:50px;
+      margin: 0.24em 0;
+    }
+    .threePieceHeader {margin-bottom: 1em;}
+    .finalHoursContainer{
+      margin:0;
+      width:100%;
+      background-color: #EB7223;
+      color:#FDFDFD;
+      padding:7px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 2.2em;
+    }
+    .countDownContainer {font-family: Humnst777, sans-serif;display: inline-block;}
+    .countDownContainer .saleEndsIn{font-weight: 800;letter-spacing: 0.5px;}
+    .countDownContainer #clockdiv {
+        font-family: inherit;
+        display: block;
+        text-align: center;
+        font-size: 50px;
+        font-weight: 800;
+        line-height: normal;
+        border: 3px solid #01579b;
+        background: rgba(255,255,255,1);
+    }
+    .countDownContainer .smalltext {
+        font-size: 0.23em;
+        text-transform: uppercase;
+        font-family: inherit;
+        font-weight: 600;
+    }
+    .cardholderInfoHeader table td {
+      padding: 0.7rem;
+    }
+    .pbd{display:block;}
+    .pbm{display:none;}
+
+    .hide-cyber-monday .fullWidthHeroSection > .promoHeader {
+      display: none!important;
+    }
+
+    body.hide-cyber-monday {
+      background-image: none!important;
+    }
+
+    .hide-cyber-monday .disclaimerRow,
+    .hide-cyber-monday .mainFooter {
+      background-color: #ffffff!important;
+      color: black!important;
+    }
+
+    .hide-cyber-monday .mainFooter .menu-item.no-link {
+      color: #005097!important;
+    }
+
+    .hide-cyber-monday .mainFooter a.menu-item:not(.no-link) {
+      color: #263238!important;
+    }
+
+    @media screen and (min-width: 1024px){
+        .countDownContainer{margin-top:4%;margin-bottom:4%;}
+    }
+
+    @media screen and (max-width: 1023px) {
+      .countDownContainer {
+        margin-top: 10px;
+      }
+    }
+    /*
+    @media (min-width:1024px) and (max-width:1199px){
+        .countDownContainer #clockdiv{font-size:3.7vw;}
+        .countDownContainer .saleEndsIn{font-size:1.1vw;}
+    }
+
+    @media (max-width:1023px){
+        .headerTitle{font-size:3.3vw;}
+    }
+    */    
+    @media screen and (min-width: 900px){
+      .flight-deal-card .route-price-card{top:0;}
+      .cardholder .flight-deal-card {overflow: visible;}
+      .route-details{float:none;}
+
+      .flight-deal-card-container{border-left-width: 2px;}
+      .gv-ribbon{left:-0.38em;}
+    }
+    @media screen and (max-width:640px){
+        .headerTitle{font-size:8vw;}  
+        .countDownContainer #clockdiv {
+            font-size: 40px;
+        }     
+    }   
+    @media screen and (max-width: 480px){
+      .pbd{display:none;}
+        .pbm{display:block;}
+      .cardholderInfoHeader table td:first-child {
+        line-height: 1.1;
+          padding-top: 0.3rem;
+        }       
+        .countDownContainer .saleEndsIn {
+            letter-spacing: normal;
+        } 
+    }
+
+
+    /* Featured Route Ribbon */
+    .gv-stub.new-route .gv-ribbon:before {
+        content: "NEW ROUTE!";
+    }
+    .gv-stub.new-route .gv-ribbon:after {
+        border-color: #286c01 #286c01 transparent transparent;
+    }
+    .gv-stub.new-route .gv-ribbon .gv-ribbon-curl {
+        background-color: #286c01;
+    }
+    .gv-stub.new-route .gv-ribbon .gv-ribbon-curl:after {
+        background-color: #153c03;
+    }
+    @media (max-width: 899px) {
+        .gv-stub.new-route {
+            background-color: #286c01;
+        }
+    }
+
+    @media (min-width: 900px) {
+      .gv-stub .gv-ribbon:before {
+        font-size: 15px;
+      }
+
+      .gv-stub.new-route .gv-ribbon {
+          background-color: #286c01;
+      }
+    }
+
+  </style>
+  <script type="text/javascript" src="//service.maxymiser.net/api/us/deals.allegiant.com/dca084/mmapi.js"></script>
+</head>
+<body><img src="https://l.e.allegiant.com/rts/open.aspx?tp=i-1NKJ-Fu-4Yq-3G495Z-26-Al-1c-G-3EftCQ-l4IP5OPTMy-1jBvfj" height="1" width="1" style="display:none">
+    <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WXPFTJJ"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+  <header class="fixedDefaultHeader">
+    <div class="row">
+      <a class="logoLink" href="https://www.allegiantair.com/">
+        <img src="https://i.e.allegiant.com/wpm/986/G4/p/common/img/allegiant_logo.svg" alt="Allegiant Logo" />
+      </a>
+      <nav class="mainNav">
+        <div class="mainNavWrapper">
+          <div class="navListWrapper left">
+            <ul class="navList" id="navMenu1">
+              <li class="menu-item">
+                <a href="https://www.allegiantair.com/" data-lilink="http://www.allegiantair.com/g4-search" class="menu-item">Flight</a>
+              </li>
+              <li class="menu-item">
+                <a href="https://www.allegiantair.com/hotels" data-lilink="http://www.allegiantair.com/hotels" class="menu-item">Hotel</a>
+              </li>
+              <li class="menu-item">
+                <a href="https://partners.rentalcar.com/allegiant/" data-lilink="https://partners.rentalcar.com/allegiant/" class="menu-item">Car</a>
+              </li>
+              <li>
+                <a href="https://deals.allegiant.com/ats/url.aspx?cr=986&wu=11">Deals</a>
+              </li>
+              <li class="menu-item">
+                <a href="https://www.allegiantair.com/online-checkin" data-lilink="http://www.allegiantair.com/online-checkin" class="menu-item">Check-in</a>
+              </li>
+              <li class="menu-item">
+                <a href="https://www.allegiantair.com/my-trips" data-lilink="http://www.allegiantair.com/my-trips" class="menu-item">Manage Travel</a>
+              </li>
+            </ul>
+          </div>
+          <div class="navListWrapper right">
+            <ul class="navList" id="navMenu2">
+              <li class="menu-item">
+                <a href="https://www.allegiantair.com/route-map" data-lilink="http://www.allegiantair.com/route-map" class="menu-item">Route Map</a>
+              </li>
+              <li class="menu-item has-dropdown">
+                <a href="https://www.allegiantair.com/flight-status" data-lilink="http://www.allegiantair.com/flight-status" class="menu-item has-dropdown" data-submenuid="subMenu11">Flight Status</a>
+                <ul class="submenu" id="subMenu11">
+                  <li>
+                    <a href="https://www.allegiantair.com/flight-status" class="menu-item submenu-item">Check Flight Status</a>
+                  </li>
+                  <li>
+                    <a href="https://www.allegiantair.com/flight-alerts?show=register" class="menu-item submenu-item">Set Flight Alerts</a>
+                  </li>
+                  <li>
+                    <a href="https://www.allegiantair.com/flight-alerts?show=manage" class="menu-item submenu-item">View or Cancel Alerts</a>
+                  </li>
+                </ul>
+              </li>
+              <li class="menu-item">
+                <a href="http://www.allegiantair.com/user-login" data-lilink="http://www.allegiantair.com/user-login" class="menu-item">Login </a>
+              </li>
+              <li class="menu-item question-mark">
+                <a href="https://www.allegiantair.com/travel-info" data-lilink="http://www.allegiantair.com/travel-info" class="menu-item question-mark" target="_blank">Help</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <div class="mobileNavLinkWrapper">
+        <a id="mobileNavToggle" class="mobileNavLink">
+          <div><span class="menuIcon"></span></div>
+        </a>
+      </div>
+    </div>
+  </header>
+  <!--Promo Header sectton with header text and countdown timer-->
+  <div class="fullWidthHeroSection">
+    <div class="row promoHeader">
+      <div class="small-12 medium-12 large-8 columns promo2col">
+          <div class="headerTitle">
+            <div style="font-family:Humnst777,sans-serif;" class="ht_line1">
+            <span style="display: inline-block;text-align:center;line-height: 0.5;font-size: 0.6em;font-weight: 100;">
+              <span style="font-size: 1.6em;line-height: 0.75;">72</span>
+              <br/>
+              <span style="font-size: 0.55em;font-weight: 600;">HOUR</span>
+            </span> <span style="font-size: 1.35em;font-weight: 600;">SUMMER SALE</span>
+          </div>
+          <div style="font-family:Humnst777,sans-serif;line-height: normal;font-weight: 400;font-size:0.85em;" class="ht_line2">Select cities on sale</div>
+          </div>
+      </div>
+      <div class="small-12 medium-10 large-6 columns promo3col" style="padding-left:60px; line-height:85px;" width="100%">
+          <div class="promoSize">
+            <img src="https://i.e.allegiant.com/wpm/986/G4/c/promo/20200213_PresidentsDay_d_PromoBanner1.png" alt="Allegiant Presidents Day Deals" style="text-align: center;"/>
+          </div>
+      </div><!--
+      <div class="small-7 medium-6 large-4 columns promo3col" style="display:none;">
+          <div class="headerTitle promoSize">
+            <img src="http://i.e.allegiant.com/wpm/986/G4/c/promo/20200213_PresidentsDay_d_PromoBanner2.png" alt="Allegiant Presidents Day Deals" >
+          </div>
+      </div>-->
+      <div class="small-12 medium-12 large-5 columns">
+          <div class="countDownContainer">
+            <div class="finalHoursContainer" style="display:none;">LAST CHANCE</div>
+              <div class="saleEndsIn">SALE ENDS</div>
+              <div id="clockdiv">
+                <div class="days"><span></span><div class="smalltext">Days</div></div>
+                <div class="hours"><span></span><div class="smalltext">Hours</div></div>
+                <div class="minutes"><span></span><div class="smalltext">Minutes</div></div>
+                <div class="seconds"><span></span><div class="smalltext">Seconds</div></div>
+              </div>
+          </div>
+      </div>
+    </div>
+    <div class="row promoHeader" style="padding:10px;">
+      <div class="pbd"><img src="" alt="Low Fares Worth Celebrating" style="text-align: center;"/></div>
+      <div class="pbm"><img src="" alt="Low Fares Worth Celebrating" style="text-align: center;"/></div>
+    </div>
+    <div class="fadeToWhite"> </div>
+  </div>
+  <!--End promo header section-->
+  <!--Start Cardholder Banner-->
+
+  <!--End Cardholder Banner-->
+  <div class="row">
+    <div class="small-12 columns collapsed tabs-content-column">
+      <div class="tab-nav-wrapper row">
+        <div class="small-12 columns signUpContainer">
+          <div class="email-sign-up" style="">
+            <form id="email-sign-up" action="" method="POST">
+              <input type="email" name="email" placeholder="Enter your email to receive our latest deals!" id="input-email" aria-label="Type in your e-mail here" title="Your e-mail" style="max-width:330px;"/>
+              <input type="submit" value="SUBMIT" aria-label="Click here to submit your e-mail" title="submit" class="button email-submit" />
+            </form>
+            <form id="email-sign-up-2" style="display:none; position:relative;">
+              <label for="input-HAC" style="position:absolute; top:-12px;">Please select your home airport</label>
+              <select name="HAC" id="input-HAC" style="max-width:330px;">
+                <option value="" disabled>Please select your home airport</option>
+              </select>
+              <input type="submit" value="SUBMIT" aria-label="Click here to select your home airport" title="submit" class="button email-submit" />
+            </form>
+            <div class="email-form-status" style="display:none;">Thank You!</div>
+          </div>
+        </div>
+        <div class="small-12 columns tab-nav-wrapper-inner">
+          <div class="tab-group">
+            <div class="tab-item " data-tabsection="tabSection1" tabindex="0">
+              <div class="tab-title">
+                Flight Deals
+              </div>
+            </div>
+            <div class="tab-item " data-tabsection="tabSection2" tabindex="0">
+              <div class="tab-title">
+                Vacation Packages
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Start Tab Sections -->
+      <div class="tab-nav-sections-wrapper row collapse dealsContentWrapper">
+        <div class="small-12 columns" style="background-color:#e4e4e4;">
+          <form id="airport-select-form">
+            <span class="airport-select-label">Select your home airport</span><select id="airport-select" name="airport-select" title="select your home airport" style="width:400px;"><option value="ZZZ" disabled>Please select your home airport</option></select>
+          </form>
+        </div>
+        <div class="small-12 columns collapsed tab-sections-wrapper">
+          <div id="dealsLoadingText" style="text-align:  center;padding: 1.5rem 1em 0;color: #01579b;font-weight: 600;font-family: sans-serif;">Loading Deals...</div>
+          <section class="tab-section" id="tabSection1">
+            <h3 class="flightsDepartingFromContainer">Flights from <span id="departingLocation"></span> to</h3>
+            <div id="flight-deals-AJAX" class="flight-deals-module-wrapper dealsContainer ajaxContentContainer FDCards">
+              <div class="flight_deal_template" style="display:none;">
+                <a data-info="flight-deal" href="https://www.allegiantair.com/lookup/md5/500ffe46980cdsdfs?dlSource=CheetahDigital&amp;search_type=F&amp;flnc=2&amp;FL_dair={origin}&amp;FL_aair={destination}&amp;FL_1_ddte={starttraveldateMMddyyyy}&amp;FL_2_ddte={endtraveldateMMddyyyy}&amp;FL_1_arlc=G4&amp;FL_2_arlc=G4&amp;adu=1&amp;show_calendar=1" class="flight-deal-card-container orig_{origin} dest_{destination}" onclick="ga('send', {hitType: 'event', eventCategory: 'Flight Deal', eventAction: 'click', eventLabel: '{origin}_{destination}'});">
+                  <div class="gv-stub{featured}"><div class="gv-ribbon"><span class="gv-ribbon-curl"></span></div></div>
+                  <div class="flight-deal-card">
+                    <div class="route-details">
+                      <div class="route-info g4blue">
+                        <div class="origin">{originCityState} to</div>
+                        <div class="destination">{destinationCityState}</div>
+                        <div class="flight-time-container"><span class="airport-code">{origin}</span><span class="flight-time"><span>NONSTOP<br/>{flightDuration}<sup>‡</sup></span></span><span class="airport-code">{destination}</span></div>
+                      </div>
+                      <div class="route-terms hide-for-small-only">
+                        <div class="line1"><span>Book Now! Limited seats at this price.</span></div>
+                        <div class="line2"><span>Risk free! You can cancel within 24 hours of booking.<sup>†</sup></span></div>
+                        <div class="line3">Rates sampled from {starttraveldateM_d_yyyy} through {endtraveldateM_d_yyyy} include all taxes and fees</div>
+                      </div>
+                    </div>
+                    <div class="route-price-card{strikethroughClass}">
+                      <div class="pc-header-warning">{pcHeaderContent}</div>
+                      <div class="pc-price-strikethrough">{strikethroughPrice}</div>
+                      <div class="pcpst-subtext"></div>
+                      <div class="pc-price">{price}</div>
+                      <div class="pcp-subtext"></div>
+                      <div class="cta-container"><span class="button continue g4greenBg">Book Now</span></div>
+                      <div class="pc-usp"><span>Free 24-hour cancellation<sup>†</sup></span></div>
+                    </div>
+                    <div class="route-terms show-for-small-only">
+                      <div class="line3">Rates sampled from {starttraveldateM_d_yyyy} through {endtraveldateM_d_yyyy} include all taxes and fees</div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </section>
+          <section class="tab-section" id="tabSection2">
+            <div id="hotel-deals-all-AJAX" class="ajaxContentContainer">
+              <div class="fromHomeAirportText">Air + Hotel deals departing from your local airport</div>
+              <div class="hotel_deal_template" style="display:none;">
+
+                <div class="default-deal-module-wrapper">
+                  <div id="AC_{destination}" data-ac="{destination}" class="row hotelOrigin {origin}">
+                    <h2 class="hotelDealCity" data-ac="{destination}">{cityState}</h2>
+                    <div class="small-12 columns locationDealsContainer">
+
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row hotel-deal-wrapper-two">
+                  <img class="small-12 medium-3 columns" src="{imgSrc}" alt="{hotelName}" />
+                  <div class="small-12 medium-9 large-7 columns hotelDealText">
+                    <h5>{hotelName}</h5>
+                    <h4>{offer}</h4>
+                  </div>
+                  <div class="small-12 medium-9 large-2 columns hotelDealCTA">
+                    <a class="hotelBookNow" href="http://deals.allegiant.com/ats/url.aspx?cr=986&amp;wu=22&amp;p={p}&amp;FL_1_ddte={starttraveldate}&amp;FL_2_ddte={endtraveldate}"><span class="button continue">BOOK NOW</span></a>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="disclaimerRow">
+    <div class="disclaimer appleLinks" id="disclaimerText"></div>
+  </div>
+          <footer class="mainFooter">
+            <nav class="footerNav row">
+                <div class="large-10 columns">
+                    <div class="row">
+                        <div class="footerNavListColumn small-12 medium-12 large-3 columns">
+                            <ul class="footerNavList">
+                                <li class="menu-item question-mark">
+                                    <a class="menu-item question-mark  no-link">Company </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="https://www.allegiantair.com/about-allegiant"
+                                        data-lilink="https://www.allegiantair.com/about-allegiant"
+                                        class="menu-item question-mark">About Allegiant </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="http://ir.allegiantair.com/phoenix.zhtml?c=197578&p=irol-news&nyo=0"
+                                        data-lilink="http://ir.allegiantair.com/phoenix.zhtml?c=197578&p=irol-news&nyo=0"
+                                        class="menu-item question-mark no-utm"   >Press Room </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="http://ir.allegiantair.com/"
+                                        data-lilink="http://ir.allegiantair.com/"
+                                        class="menu-item question-mark no-utm"   >Investor Relations </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="https://www.allegiantair.com/charters"
+                                        data-lilink="https://www.allegiantair.com/charters"
+                                        class="menu-item question-mark">Groups / Charters </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="https://www.allegiantair.com/careers"
+                                        data-lilink="https://www.allegiantair.com/careers"
+                                        class="menu-item question-mark">Careers </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="https://www.allegiantair.com/contactus"
+                                        data-lilink="https://www.allegiantair.com/contactus"
+                                        class="menu-item question-mark">Contact Us </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                  <a href="https://www.playnonstop.com"
+                                      data-lilink="https://www.playnonstop.com"
+                                      class="menu-item question-mark">Allegiant nonstop </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="footerNavListColumn small-12 medium-12 large-3 columns">
+                            <ul class="footerNavList">
+                                <li class="menu-item question-mark">
+                                    <a class="menu-item question-mark  no-link">New Reservations </a>
+                                </li>
+                                <li class="menu-item question-mark"><a class="menu-item question-mark " href="https://deals.allegiant.com/ats/url.aspx?cr=986&wu=11">Deals!</a></li>
+                                <li class="menu-item question-mark">
+                                    <a href="https://www.allegiantair.com/route-map"
+                                        data-lilink="https://www.allegiantair.com/route-map"
+                                        class="menu-item question-mark">Route Map </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="https://www.allegiantair.com/subscribe"
+                                        data-lilink="https://www.allegiantair.com/subscribe"
+                                        class="menu-item question-mark">Join Our Email List </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="https://www.allegiantair.com/destinations/"
+                                        data-lilink="https://www.allegiantair.com/destinations/"
+                                        class="menu-item question-mark">Explore Destinations </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="https://www.allegiantair.com/trip-flex"
+                                        data-lilink="https://www.allegiantair.com/trip-flex"
+                                        class="menu-item question-mark">Trip Flex </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="https://ta.allegiantair.com/ta-login"
+                                        data-lilink="https://ta.allegiantair.com/ta-login"
+                                        class="menu-item question-mark">Travel Agents </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="https://bankofamerica.tt.omtrdc.net/m2/bankofamerica/ubox/page?mbox=Allegiant&mboxDefault=https://secure.bankofamerica.com/applynow/timeout.go&at_property=1a8d0183-947a-8fa5-52e5-2b3fc472e468&tagname=Allegiant-HP-Footer"
+                                        data-lilink="https://bankofamerica.tt.omtrdc.net/m2/bankofamerica/ubox/page?mbox=Allegiant&mboxDefault=https://secure.bankofamerica.com/applynow/timeout.go&at_property=1a8d0183-947a-8fa5-52e5-2b3fc472e468&tagname=Allegiant-HP-Footer"
+                                        class="menu-item question-mark no-utm">Allegiant World Mastercard&reg;</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="footerNavListColumn small-12 medium-12 large-3 columns">
+                            <ul class="footerNavList">
+                                <li class="menu-item question-mark">
+                                    <a class="menu-item question-mark  no-link " >Manage Travel </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="https://www.allegiantair.com/travel-info"
+                                        data-lilink="https://www.allegiantair.com/travel-info"
+                                        class="menu-item question-mark">Travel Info / FAQs </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="https://www.allegiantair.com/flight-status"
+                                        data-lilink="https://www.allegiantair.com/flight-status"
+                                        class="menu-item question-mark">Flight Status </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="https://www.allegiantair.com/baggage-1"
+                                        data-lilink="https://www.allegiantair.com/baggage-1"
+                                        class="menu-item question-mark">Baggage Policy </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="https://www.allegiantair.com/seating-checking-boarding"
+                                        data-lilink="https://www.allegiantair.com/seating-checking-boarding"
+                                        class="menu-item question-mark">Seating, Checking-In & <br>Boarding </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="https://www.allegiantair.com/my-trips"
+                                        data-lilink="https://www.allegiantair.com/my-trips"
+                                        class="menu-item question-mark">View / Update Trip </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="https://www.allegiantair.com/online-checkin"
+                                        data-lilink="https://www.allegiantair.com/online-checkin"
+                                        class="menu-item question-mark">Check-in Online </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="https://www.allegiantair.com/allegiant-mobile-app"
+                                        data-lilink="https://www.allegiantair.com/allegiant-mobile-app"
+                                        class="menu-item question-mark">Mobile </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="footerNavListColumn small-12 medium-12 large-3 columns">
+                            <ul class="footerNavList">
+                                <li class="menu-item question-mark">
+                                    <a class="menu-item question-mark  no-link">Policies, Terms & Legal </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="https://www.allegiantair.com/contract-carriage"
+                                        data-lilink="https://www.allegiantair.com/contract-carriage"
+                                        class="menu-item question-mark">Contract of Carriage </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="https://www.allegiantair.com/terms-and-conditions"
+                                        data-lilink="https://www.allegiantair.com/terms-and-conditions"
+                                        class="menu-item question-mark">Terms and Conditions </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="https://www.allegiantair.com/luggage-limitations-liability"
+                                        data-lilink="https://www.allegiantair.com/luggage-limitations-liability"
+                                        class="menu-item question-mark">Baggage Limitation of Liability </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="https://www.allegiantair.com/customer-service-plan"
+                                        data-lilink="https://www.allegiantair.com/customer-service-plan"
+                                        class="menu-item question-mark">Customer Service Plan </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="https://www.allegiantair.com/tarmac-delay-contingency-plan"
+                                        data-lilink="https://www.allegiantair.com/tarmac-delay-contingency-plan"
+                                        class="menu-item question-mark">Tarmac Delay Contingency Plan </a>
+                                </li>
+                                <li class="menu-item question-mark">
+                                    <a href="https://www.allegiantair.com/privacy-policy"
+                                        data-lilink="https://www.allegiantair.com/privacy-policy"
+                                        class="menu-item question-mark">Privacy Policy </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="footerNavListColumn small-12 medium-12 large-2 columns followUs">
+                    <ul class="footerNavList">
+                        <li class="menu-item question-mark">
+                            <a class="menu-item question-mark  no-link">Follow us </a>
+                        </li>
+                        <li class="menu-item question-mark">
+                            <a href="https://www.facebook.com/Allegiant"
+                                data-lilink="https://www.facebook.com/Allegiant"
+                                class="menu-item question-mark no-utm" target="_blank">Facebook </a>
+                        </li>
+                        <li class="menu-item question-mark">
+                            <a href="https://www.instagram.com/allegiant/"
+                                data-lilink="https://www.instagram.com/allegiant/"
+                                class="menu-item question-mark no-utm" target="_blank">Instagram </a>
+                        </li>
+                        <li class="menu-item question-mark">
+                            <a href="https://twitter.com/allegiant"
+                                data-lilink="https://twitter.com/allegiant"
+                                class="menu-item question-mark no-utm" target="_blank">Twitter </a>
+                        </li>
+                        <li class="menu-item question-mark">
+                            <a href="https://www.youtube.com/channel/UCqvvl46aLLA0WXiHn44-5Gw"
+                                data-lilink="https://www.youtube.com/channel/UCqvvl46aLLA0WXiHn44-5Gw"
+                                class="menu-item question-mark no-utm" target="_blank">YouTube </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="copyright row">
+                <span>&copy; 2020 Allegiant Travel Company&reg;. All rights reserved.</span>
+            </div>
+        </footer>
+</body>
+</html>
