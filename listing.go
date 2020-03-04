@@ -38,24 +38,21 @@ func newListing() Listing {
 }
 
 // Listing is an initializer that takes context-dependent data and scrapes it
-func pointToListingFromThis(parsableSrcContent string) *Listing {
+func (LP *ListingParser) pointToListingFromThis(parsableSrcContent string) *Listing {
 	var L Listing = newListing()
 
 	L.srcContent = parsableSrcContent
-	L.RecordScrapestamp()
-	L.RecordDeparture()
-	L.RecordArrival()
-	L.RecordPrice()
+	LP.RecordScrapestamp(L)
+	LP.RecordDeparture(L)
+	LP.RecordArrival(L)
+	LP.RecordPrice(L)
 
 	return &L
 }
 
 type ValidDataObj interface {
-	func isNil()
-	/*
-	func isValid()
-	func is?
-	*/
+	isNil()
+	isValid()
 }
 
 func WhetherNilOrNot(obj ValidDataObj) bool {
@@ -77,6 +74,7 @@ func (L *Listing) isNil() (whetherAnyNilData bool) {
 	return
 }
 
+/* TODO: change all isValid to isInvalid for consistent negative testing */
 func (L *Listing) isValid() bool {
 	return false
 }
@@ -84,27 +82,30 @@ func (L *Listing) isValid() bool {
 /* TODO: unexport default methods once testing confirms okay. fmt implies timeSpace should be exported if Record* is */
 
 // RecordScrapestamp returns a default timeSpace because this is the default Listing class
-func (Listing) RecordScrapestamp() timeSpace {
-	return timeSpace{}
+func (LP *ListingParser) RecordScrapestamp(L *Listing) err {
+	L.ScrapeStamp = timeSpace{}
+	return nil
 }
 
 // RecordDeparture returns a default timeSpace because this is the default Listing class
-func (Listing) RecordDeparture() timeSpace {
-	return timeSpace{}
+func (LP *ListingParser) RecordDeparture(L *Listing) err {
+	L.Depart = timeSpace{}
+	return nil
 }
 
 // RecordArrival returns a default timeSpace because this is the default Listing class
-func (Listing) RecordArrival() timeSpace {
-	return timeSpace{}
+func (LP *ListingParser) RecordArrival(L *Listing) err {
+	L.Arrive = timeSpace{}
+	return nil
 }
 
 // RecordPrice returns a default timeSpace because this is the default Listing class
-func (Listing) RecordPrice() int {
-	return 0
+func (LP *ListingParser) RecordPrice(L *Listing) err {
+	L.Price = 0
+	return nil
 }
 
 // String will return JSON Repr of Listing Or Flat Repr
 func (nestedStruct Listing) String() string {
-	unnusedVar := nestedStruct.Price
 	return fmt.Sprint("TODO: Show pretty print of Listing")
 }
