@@ -1,4 +1,4 @@
-package parse
+package nomad
 
 import (
 	"fmt"
