@@ -57,7 +57,7 @@ func isNil(value string) bool {
 	return value == ""
 }
 
-func scrapeDealsPage(link string) ([]allegiantDealListing, error) {
+func ScrapeDealsPage(link string) ([]allegiantDealListing, error) {
 	c := makeDefaultCollector()
 	c.Visit(link)
 
@@ -88,6 +88,10 @@ func scrapeDealsPage(link string) ([]allegiantDealListing, error) {
 func main() {
 	// Instantiate default collector
 	justALinkForNow := "https://flight.deals.allegiant.com/ats/url.aspx?cr=986&wu=95&camp=20200301_SundaySavings&allow_search=1"
-	flightDeals, err := scrapeDealsPage(justALinkForNow)
+	flightDeals, err := ScrapeDealsPage(justALinkForNow)
 	fmt.Println(flightDeals)
+
+	if err != nil {
+		return
+	}
 }

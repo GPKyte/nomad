@@ -36,11 +36,6 @@ type ValidDataObj interface {
 	isValid()
 }
 
-func WhetherNilOrNot(obj ValidDataObj) bool {
-	/* TODO: Consider diff between dot notation and method as is. Recall readability versus convenience */
-	return obj.isNil()
-}
-
 func (T *timeSpace) isNil() bool {
 	return false /* TODO: Check revamped timeSpace struct for nils or bad formatting */
 }
@@ -64,7 +59,7 @@ func (L *Listing) isValid() bool {
 
 func recordCurrentTimeSpace(location string) timeSpace {
 	return timeSpace{
-		DateTime: time.Now().UTF8(),
+		DateTime: time.Now().UTC(),
 		Location: location,
 	}
 }

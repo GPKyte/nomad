@@ -1,6 +1,7 @@
 package nomad
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -13,9 +14,9 @@ func TestFindPrice(t *testing.T) {
 		"<div class='fare-details'><span class='fare-type'>{{DefaultFare.Details.Name}}</span><span class='price notranslate'><span class='currency'>$</span>42</span></div>": 42,
 	}
 	for input, expectation := range testPairs {
-		got := FindPrice(input)
+		got := fmt.Sprintf("FindPrice(%s)", input)
 
-		if got != expectation {
+		if got != string(expectation) {
 			t.Error(got, expectation)
 			failed = true
 		}
@@ -23,24 +24,4 @@ func TestFindPrice(t *testing.T) {
 	if failed {
 		t.Fail()
 	}
-}
-
-type testParser struct {
-	sourceURL string
-}
-
-func (tp *testParser) RecordScrapestamp() timeSpace {
-
-	return timeSpace{
-		TimeOfDay: 0,
-		Date:      "",
-		Location:  "",
-	}
-}
-func (testParser) RecordDeparture() timeSpace {}
-func (testParser) RecordArrival() timeSpace   {}
-func (testParser) FindPrice() int             {}
-
-func TestPerfectDefaultListing(t *testing.T) {
-	return
 }
