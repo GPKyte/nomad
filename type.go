@@ -1,7 +1,7 @@
 package nomad
 
 import (
-	"fmt"
+	"io"
 	"time"
 )
 
@@ -27,7 +27,7 @@ type readable interface {
 	Read() string
 }
 
-func newListing() Listing {
+func newInvalidListing() Listing {
 	return Listing{}
 }
 
@@ -66,5 +66,84 @@ func recordCurrentTimeSpace(location string) timeSpace {
 
 // String will return JSON Repr of Listing Or Flat Repr
 func (L *Listing) String() string {
-	return fmt.Sprintf("From: %s\nTo: %s\nCost: %v\nStamp: %s\n.............................", L.Depart, L.Arrive, L.Price, L.Scrape)
+	return String(L.json())
+}
+
+func (L *Listing) csv() string {
+	var csvRow = []string{
+		L.Price,
+		L.Depart.DateTime,
+		L.Depart.Location,
+		L.Arrive.DateTime,
+		L.Arrive.Location,
+		L.Scrape.DateTime,
+		L.Scrape.Location,
+	}
+
+	return join(',', csvRow)
+}
+
+func (L *Listing) json() map[string]interface{} {
+
+	var jsonRepr = map[string]interface{}{
+		"Price":      L.Price,
+		"DepartTime": L.Depart.DateTime,
+		"DepartLoc":  L.Depart.Location,
+		"ArriveTime": L.Arrive.DateTime,
+		"ArriveLoc":  L.Arrive.Location,
+		"ScrapeTime": L.Scrape.DateTime,
+		"ScrapeURL":  L.Scrape.Location,
+	}
+
+	return jsonRepr
+}
+
+func join(delim rune, csvRow []string) {
+
+}
+
+// NewListingsFromJSON is used to import Listing data that has been exported per standard
+func NewListingsFromJSON(srcJSON io.Reader) []Listing {
+	// TODO
+}
+
+// NewListingsFromCSV is used to import Listing data that has been exported per standard
+func NewListingsFromCSV(srcCSV io.Reader) []Listing {
+	// TODO
+}
+
+func NewListingRand() Listing {
+	var (
+		now       = time.Now().UTC()
+		before    = time.Now().UTC()
+		after     = time.Now().UTC()
+		departLoc = chooseLoc(5)
+		arriveLoc = chooseLoc(9)
+		url       = "https://random.local"
+	)
+
+	return Listing{
+		Price:  50,
+		Depart: DateTime{before, departLoc},
+		Arrive: DateTime{after, arriveLoc},
+		Scrape: DateTime{now, url},
+	}
+}
+
+func chooseLoc(index int) string {
+	locations := []string{
+		"A",
+		"B",
+		"C",
+		"D",
+		"E",
+		"F",
+		"G",
+		"H",
+		"I",
+		"J",
+		"K",
+	}
+
+	return locations[index]
 }
