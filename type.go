@@ -27,6 +27,12 @@ type readable interface {
 	Read() string
 }
 
+type location struct {
+	Name  string
+	State string
+	Code  string
+}
+
 func newInvalidListing() Listing {
 	return Listing{}
 }
@@ -124,26 +130,34 @@ func NewListingRand() Listing {
 
 	return Listing{
 		Price:  50,
-		Depart: DateTime{before, departLoc},
-		Arrive: DateTime{after, arriveLoc},
-		Scrape: DateTime{now, url},
+		Depart: timeSpace{before, departLoc},
+		Arrive: timeSpace{after, arriveLoc},
+		Scrape: timeSpace{now, url},
 	}
 }
 
-func chooseLoc(index int) string {
-	locations := []string{
-		"A",
-		"B",
-		"C",
-		"D",
-		"E",
-		"F",
-		"G",
-		"H",
-		"I",
-		"J",
-		"K",
+// Value returns that which should be used in comparisons, this is the Listing price
+func Value(L *Listing) int {
+	return L.Price()
+}
+
+func values(collection ...interface{ Value() }) []int {
+	var values = make([]int, len(collection))
+
+	for v := range collection {
+		values = append(values, Value(v))
+	}
+}
+
+func max(collection []interface{ Value() }) int {
+	top_value = Value(collection[0])
+
+	for val := range values(collection) {
+
+		if val > top_value {
+			top_value = val
+		}
 	}
 
-	return locations[index]
+	return top_value
 }
