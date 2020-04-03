@@ -33,6 +33,8 @@ type location struct {
 	Code  string
 }
 
+type json map[string]interface{}
+
 func newInvalidListing() Listing {
 	return Listing{}
 }
@@ -63,6 +65,11 @@ func (L *Listing) isValid() bool {
 
 /* TODO: unexport default methods once testing confirms okay. fmt implies timeSpace should be exported if Record* is */
 
+func makeScrapeStamp(srcURL string) {
+	stamp := recordCurrentTimeSpace(srcURL)
+	return stamp
+}
+
 func recordCurrentTimeSpace(location string) timeSpace {
 	return timeSpace{
 		DateTime: time.Now().UTC(),
@@ -72,7 +79,14 @@ func recordCurrentTimeSpace(location string) timeSpace {
 
 // String will return JSON Repr of Listing Or Flat Repr
 func (L *Listing) String() string {
-	return String(L.json())
+	var gift string
+
+	if weWantDefault := true; weWantDefault {
+		gift = makeJSONString(L.json())
+	} else {
+		gift = L.csv()
+	}
+	return gift
 }
 
 func (L *Listing) csv() string {
@@ -89,9 +103,9 @@ func (L *Listing) csv() string {
 	return join(',', csvRow)
 }
 
-func (L *Listing) json() map[string]interface{} {
+func (L *Listing) json() json {
 
-	var jsonRepr = map[string]interface{}{
+	var jsonRepr = json{
 		"Price":      L.Price,
 		"DepartTime": L.Depart.DateTime,
 		"DepartLoc":  L.Depart.Location,
@@ -102,6 +116,10 @@ func (L *Listing) json() map[string]interface{} {
 	}
 
 	return jsonRepr
+}
+
+func makeJSONString(srcJSON json) {
+
 }
 
 func join(delim rune, csvRow []string) {
@@ -119,10 +137,12 @@ func NewListingsFromCSV(srcCSV io.Reader) []Listing {
 }
 
 func NewListingRand() Listing {
+	const nanoConvRate = 10 ^ 9
 	var (
 		now       = time.Now().UTC()
 		before    = time.Now().UTC()
-		after     = time.Now().UTC()
+		twentyMin = time.Duration(nanoConvRate * (60 * 20)) // 60 sec/min * 20 min
+		after     = time.Now().UTC().Add(twentyMin)
 		departLoc = chooseLoc(5)
 		arriveLoc = chooseLoc(9)
 		url       = "https://random.local"
