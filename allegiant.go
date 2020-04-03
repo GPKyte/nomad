@@ -2,11 +2,16 @@ package nomad
 
 import (
 	"fmt"
-	"io"
+	"os"
 
 	"github.com/PuerkitoBio/goquery"
 
 	"github.com/gocolly/colly"
+)
+
+const (
+	allegiantCacheDir = "cache/allegiant"
+	rawHTMLSuffix     = "_raw.html"
 )
 
 // BasicHTMLError is a simple std for error reporting
@@ -18,12 +23,6 @@ type BasicHTMLError struct {
 	DOM     *goquery.Selection
 }
 
-func rapidTest(c *colly.Collector) error {
-	c.Wait(800)
-
-	return nil
-}
-
 func (e *BasicHTMLError) Error() string {
 	verbose := bool(false)
 	var contextLine string
@@ -32,16 +31,6 @@ func (e *BasicHTMLError) Error() string {
 		contextLine = "Context: " + e.context + "\n"
 	}
 	return fmt.Sprintf("Probably Parsing related;\nWant: %s\nGot: %s\n%s", e.want, e.got, contextLine)
-}
-
-func makeDefaultCollector() *colly.Collector {
-	return colly.NewCollector(
-		colly.AllowedDomains("allegiant.com"),
-		colly.MaxDepth(2),
-		colly.UserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:73.0), Gecko/20100101 Firefox/73.0"),
-		colly.CacheDir("resources/cache/allegiant"),
-		colly.Async(false), /* Maybe True... Allegiant uses AJAX for normal searches */
-	)
 }
 
 type allegiantDealListing struct {
@@ -60,71 +49,78 @@ func isNil(value string) bool {
 	return value == ""
 }
 
-func NewListingsFrom(flightcard string) []Listing {
-
+func newDefaultCollector() *colly.Collector {
+	return colly.NewCollector(
+		colly.AllowedDomains("www.allegiantair.com"),
+		colly.UserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:73.0), Gecko/20100101 Firefox/73.0"),
+		colly.CacheDir(allegiantCacheDir),
+		colly.Async(false), /* Maybe True... Allegiant uses AJAX for normal searches */
+	)
 }
 
-func extractListingFrom(flightDealCard *colly.HTMLElement) {
-	departLocation := flightDealCard.ChildText(".origin")
-	arriveLocation := flightDealCard.ChildText(".destination")
-	effectiveDateRange := flightDealCard.ChildText(".line3")
-	price := flightDealCard.ChildText(".pc-price")
-	duration := flightDealCard.ChildText("span.flight-time span")
+// scrapeDealsPage will nevigate to a specific page, download the raw HTML and save that to a cache
+func scrapeDealsPage(col *colly.Collector, url string) chan allegiantDealListing {
+	flightDeals := make(chan allegiantDealListing)
 
-	if !isNil(price) {
-		newCard := allegiantDealListing{
+	col.OnHTML("div.flight-deal-card", func(flightDealCard *colly.HTMLElement) {
+		departLocation := flightDealCard.ChildText(".origin")
+		arriveLocation := flightDealCard.ChildText(".destination")
+		effectiveDateRange := flightDealCard.ChildText(".line3")
+		price := flightDealCard.ChildText(".pc-price")
+		duration := flightDealCard.ChildText("span.flight-time span")
+
+		flightDeals <- allegiantDealListing{
 			departLocation:     departLocation,
 			arriveLocation:     arriveLocation,
 			effectiveDateRange: effectiveDateRange,
 			price:              price,
 			duration:           duration,
 		}
-		flightDeals = append(flightDeals, newCard)
-	}
+	})
 
-}
+	col.OnScraped(func(r *colly.Response) {
+		cache(r.Request.URL.String()+rawHTMLSuffix, r.Body)
+		close(flightDeals)
+	})
 
-const allegiantCacheDir string = "cache/allegiant"
+	col.Visit(url)
 
-// ScrapeDealsPage will nevigate to a specific page, download the raw HTML and save that to a cache
-func ScrapeDealsPage(link string) ([]allegiantDealListing, error) {
-	c := makeDefaultCollector()
-
-	if link != nil {
-		c.Visit(link)
-		Wait()
-
-	}
-
-	var flightDeals []allegiantDealListing
-	c.OnHTML("div.flight-deal-card", extractListingFrom())
-
-	return flightDeals, nil
-}
-
-func parseFromCache(path string) []Listing {
-	cache := io.ReaderFrom(path)
-	var doc goquery.Document = goquery.NewDocumentFromReader(cache)
-	colly.Context
-	doc
-
-}
-
-func NewListingFromAllegiantFlightCard(deal allegiantDealListing) []Listing {
-	// Issue with the Listings from the deal page is that the average price is calculated
-	// from a sampling of days which of the range, may not have full coverage. So what is shown
-	// is bad data but a source of data as a test, thi means we should distinguish from the rest
-	// with something like a marker such as the scrape source.
-
+	return flightDeals
 }
 
 func main() {
 	// Instantiate default collector
-	justALinkForNow := "https://flight.deals.allegiant.com/ats/url.aspx?cr=986&wu=95&camp=20200301_SundaySavings&allow_search=1"
-	flightDeals, err := ScrapeDealsPage(justALinkForNow)
-	fmt.Println(flightDeals)
+	col := newDefaultCollector()
+	// Find deals page at `#mini-panel-allegiant3_bottom_menu > li.first leaf > a`.Text()
+	link2deals := "https://deals.allegiant.com/ats/url.aspx?cr=986&wu=11"
+	flightDeals := scrapeDealsPage(col, link2deals)
+
+	for deal := range flightDeals {
+		fmt.Println(deal.String())
+	}
+}
+
+func log(e error) {
+	fmt.Println(e)
+}
+
+func cache(refname string, data []byte) {
+	// Open a new file at refname, and push the data to it.
+	// If the refname exists in the cache already, log the error
+	// then generate a new refname
+	cacheLoc := allegiantCacheDir + refname
+	if _, err := os.Stat(cacheLoc); os.IsExist(err) {
+		cache("9"+refname, data) // Think of a good cache naming system and avoid this problem
+		// Maybe just report error, but don't I want to save all scrape data?
+	}
+	err := writeFile(cacheLoc, data)
 
 	if err != nil {
-		return
+		log(err)
 	}
+}
+
+func parseFromCache(path string) []Listing {
+	// TODO: read n files from cache location, should be agnostic of naming convention
+	return make([]Listing, 0)
 }
