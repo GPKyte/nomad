@@ -2,6 +2,8 @@ package nomad
 
 import (
 	"io/ioutil"
+	"os"
+	"regexp"
 	"strings"
 )
 
@@ -60,4 +62,27 @@ func loadAllegiantLocationData(index int) []location {
 
 	<-done
 	return locations
+}
+
+func writeFile(filepath string, data []byte) error {
+	var readAndWriteMode os.FileMode = 666 // No point in making it executable too
+	return ioutil.WriteFile(filepath, data, readAndWriteMode)
+}
+
+// Allowing added delim flexibility to test features of regexp, should not impact default newline char
+func readFileByLine(filepath string, delim ...string) []string {
+	if delim == nil {
+		delim = "\n"
+	}
+
+	newline := regexp.MustCompile(strings.Join([]string{delim}, "|"))
+	got, err = ioutil.ReadFile(filepath)
+
+	if got == nil || err != nil {
+		log(err)
+		return nil
+	}
+
+	fully := -1
+	return newline.Split(contents, fully)
 }
