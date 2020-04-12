@@ -3,9 +3,11 @@ package nomad
 import (
 	"fmt"
 	"os"
+	"regexp"
+	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
-
 	"github.com/gocolly/colly"
 )
 
@@ -59,7 +61,10 @@ func newDefaultCollector() *colly.Collector {
 }
 
 // scrapeDealsPage will nevigate to a specific page, download the raw HTML and save that to a cache
-func scrapeDealsPage(col *colly.Collector, url string) chan allegiantDealListing {
+func scrapeDealsPage() []Listing {
+	likelyCap := 100
+	listings := make([]Listing, likelyCap)
+	col := newDefaultCollector()
 	flightDeals := make(chan allegiantDealListing)
 
 	col.OnHTML("div.flight-deal-card", func(flightDealCard *colly.HTMLElement) {
@@ -83,20 +88,43 @@ func scrapeDealsPage(col *colly.Collector, url string) chan allegiantDealListing
 		close(flightDeals)
 	})
 
-	col.Visit(url)
-
-	return flightDeals
-}
-
-func main() {
-	// Instantiate default collector
-	col := newDefaultCollector()
 	// Find deals page at `#mini-panel-allegiant3_bottom_menu > li.first leaf > a`.Text()
-	link2deals := "https://deals.allegiant.com/ats/url.aspx?cr=986&wu=11"
-	flightDeals := scrapeDealsPage(col, link2deals)
+	url := "https://deals.allegiant.com/ats/url.aspx?cr=986&wu=11"
+	col.Visit(url)
 
 	for deal := range flightDeals {
 		fmt.Println(deal.String())
+		listings = append(listings, newPsuedoListingFromAllegiant(deal))
+	}
+	return listings
+}
+
+// Useful to make the time data from deal workabale, returning beg and end datetime
+func makeUsefulTimeFrame(deal allegiantDealListing) (time.Time, time.Time) {
+	//durationHours if I really want to patter match for this detail
+	//durationMinutes same case as hours ^
+	const nanoConvRate = 10 ^ 9 // Because Time lib uses nanoseconds
+
+	var flightTime = 2 /* hours */ * 3600 /* sec/hr */ * nanoConvRate // Just place holder for simplification
+	// "Rates sampled from {starttraveldateM_d_yyyy} through {endtraveldateM_d_yyyy} include all taxes and fees"
+	datePattern := regexp.MustCompile(`(\d\d?/){2}\d{4}`)
+	startDate := datePattern.FindAllString(deal.effectiveDateRange, 1)
+	month, day, year := strings.Split(startDate, "/")
+	hour, min, sec := 0 // Why bother with this for flight cards?
+
+	return time.Date(year, month, day, hour, min, sec, 0, time.FixedZone("UTC-5")),
+		time.Date(year, month, day, hour, min, sec, flightTime, time.FixedZone("UTC-5"))
+}
+
+func newPsuedoListingFromAllegiant(deal allegiantDealListing, srcURL string) Listing {
+	var home string = strings.Split(deal.departLocation, " to")[:1] // Strip extra wording
+
+	return Listing{
+		Depart:     timeSpace{Time: before, Location: home},
+		Arrive:     timeSpace{Time: after, Location: deal.arriveLocation},
+		Scrape:     makeScrapeStamp(srcURL),
+		Price:      int(deal.price),
+		srcContent: deal.String(),
 	}
 }
 
