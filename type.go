@@ -16,21 +16,124 @@ type Listing struct {
 	Price      int16
 	srcContent string
 }
-
+/* Graph is a weighted and digraph impl with focus on short path Traversals
+ * Nodes and edges are kept as slices, sorted for faster minCost selection */
+ type graph struct {
+	nodes []node
+	edges []edge
+}
+type weightedGraph struct {
+	graph
+	edges []weightedEdge
+}
+type node struct {
+	Stringer
+	value interface{}
+	edges []edges
+	name string
+}
+type edge struct {
+	start	node
+	end		node
+	isDirected bool
+}
+type weightedEdge struct {
+	edge
+	weight	float64
+}
+type timedEdge struct {
+	edge
+	time	time.Time
+}
+type trip struct {
+	timedEdge
+	weightedEdge
+	Listing
+}
 type timeSpace struct {
 	DateTime time.Time
 	Location string /* standardized to lowercase, UTF8 default */
 }
-
 type readable interface {
 	String() string
 	Read() string
 }
-
 type location struct {
-	Name  string
-	State string
-	Code  string
+	node
+	Stringer
+	code	string
+	name	string
+}
+func newGraphFrom(N []node, E []edge) *graph {
+	G := new(graph)
+	for n := range N {
+		G.addNode(n)
+	}
+	for e := range E {
+		G.addEdge(e)
+	}
+	return G
+}
+func (G *graph) addEdge(e edge) error {return nil}
+func (G *graph) addNode(n node) error {return nil}
+func (G *graph) delEdge(e edge) error {return nil}
+func (G *graph) delNode(n node) error {return nil} /* Also removes all edges with node */
+func (G *graph) checkEdgeExists(e Edge) bool {return false}
+func (G *graph) isConnected() bool {return false}
+func (G *graph) isTraversable() bool {return false}
+func (G *graph) isHamiltonian() bool {return false}
+func (G *graph) getHamiltonianCycle() cycle []edge {
+	/* Traverse all Nodes at least, and preferably just once */
+	if !(G.isConnected()) || !(G.isTraversable()) {
+		cycle := []
+	} else {
+		cycle := G.doTraversal()
+	}
+	return cycle
+}
+func (G *graph)	doTraversal(start, finishAtStart) []edge {
+	/* Look at starting Node
+	 * Find incident nodes (neighbors)
+	 * Keep +/- count of unique visited to verify "doneness"
+	 * Choose edge's best neighbor
+	 * Until dead-end or goal is reached choose edge's best neighbor and repeat
+	 * If dead-end (all neighbors are visited) reached,
+	 * go back to last branch and try next best neighbor, remember to count--
+	 * If goal is reached (all nodes visited + finish node terms are met)
+	 * Then return traversal path
+	 * If count is reached but finish node terms are not met
+	 * Then log path and save graph, inspect later and see if we can solve it
+	 * Option to continue all paths remaining until terms are met
+	 */
+	return make([]edge, 0, 0)
+}
+func (G *graph) path(A node, Z node) []edge {
+	/* Find nodes connected to Z
+	 * Is A included?
+	 * Yes – done
+	 * No – find nodes with any of Z's neighbors
+	 * Repeat searching edges for A with each neighbor
+	 * considering parsing down edge set to save time on each subsequent pass
+	 */
+	return make([]edge,0,0)
+}
+func (G *graph) save(relativePathToSaveFile) error {
+	/* What format would be proper for saving a graph?
+	 * Would one file contain multiple graphs?
+	 * Would I include both edges and Vertices?
+	 * Can information be lossy or must all be retained?
+	 * One line, N lines
+	 * List of edges?
+	 * How to represent and reinterpret Nodes?
+	 * Will edge be NodeRepr -> NodeRepr?
+	 * Make it easy to reload graph
+	 */
+	return nil
+}
+func (G *graph) load(relativePathToSaveFile) error {return nil} /* Modifies State of G */
+func (G *graph) deepCopy() *graph {return new(graph)}
+func String(G *graph) string {
+	/* Assume Nodes and Edges are Stringers */
 }
 
 type json map[string]interface{}
