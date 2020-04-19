@@ -1,7 +1,9 @@
 package nomad
 
 import (
+	"fmt"
 	"io"
+	"strings"
 	"time"
 )
 
@@ -16,9 +18,10 @@ type Listing struct {
 	Price      int16
 	srcContent string
 }
+
 /* Graph is a weighted and digraph impl with focus on short path Traversals
  * Nodes and edges are kept as slices, sorted for faster minCost selection */
- type graph struct {
+type graph struct {
 	nodes []node
 	edges []edge
 }
@@ -27,23 +30,22 @@ type weightedGraph struct {
 	edges []weightedEdge
 }
 type node struct {
-	Stringer
 	value interface{}
-	edges []edges
-	name string
+	edges []edge
+	name  string
 }
 type edge struct {
-	start	node
-	end		node
+	start      node
+	end        node
 	isDirected bool
 }
 type weightedEdge struct {
 	edge
-	weight	float64
+	weight float64
 }
 type timedEdge struct {
 	edge
-	time	time.Time
+	time time.Time
 }
 type trip struct {
 	timedEdge
@@ -52,7 +54,7 @@ type trip struct {
 }
 type timeSpace struct {
 	DateTime time.Time
-	Location string /* standardized to lowercase, UTF8 default */
+	Location string /* standardize to lowercase, UTF8 default */
 }
 type readable interface {
 	String() string
@@ -60,38 +62,41 @@ type readable interface {
 }
 type location struct {
 	node
-	Stringer
-	code	string
-	name	string
+	code string
+	name string
 }
+
 func newGraphFrom(N []node, E []edge) *graph {
 	G := new(graph)
-	for n := range N {
-		G.addNode(n)
+
+	for _, ne := range N {
+		G.addNode(ne)
 	}
-	for e := range E {
-		G.addEdge(e)
+	for _, ew := range E {
+		G.addEdge(ew)
 	}
 	return G
 }
-func (G *graph) addEdge(e edge) error {return nil}
-func (G *graph) addNode(n node) error {return nil}
-func (G *graph) delEdge(e edge) error {return nil}
-func (G *graph) delNode(n node) error {return nil} /* Also removes all edges with node */
-func (G *graph) checkEdgeExists(e Edge) bool {return false}
-func (G *graph) isConnected() bool {return false}
-func (G *graph) isTraversable() bool {return false}
-func (G *graph) isHamiltonian() bool {return false}
-func (G *graph) getHamiltonianCycle() cycle []edge {
+func (G *graph) addEdge(e edge) error        { return nil }
+func (G *graph) addNode(n node) error        { return nil }
+func (G *graph) anyNode() node               { return G.nodes[0] }
+func (G *graph) delEdge(e edge) error        { return nil }
+func (G *graph) delNode(n node) error        { return nil } /* Also removes all edges with node */
+func (G *graph) checkEdgeExists(e edge) bool { return false }
+func (G *graph) isConnected() bool           { return false }
+func (G *graph) isTraversable() bool         { return false }
+func (G *graph) isHamiltonian() bool         { return false }
+func (G *graph) getHamiltonianCycle() []edge {
+	var cycle []edge
 	/* Traverse all Nodes at least, and preferably just once */
 	if !(G.isConnected()) || !(G.isTraversable()) {
-		cycle := []
+		cycle = make([]edge, 0)
 	} else {
-		cycle := G.doTraversal()
+		cycle = G.doTraversal(G.anyNode(), true)
 	}
 	return cycle
 }
-func (G *graph)	doTraversal(start, finishAtStart) []edge {
+func (G *graph) doTraversal(start node, finishAtStart bool) []edge {
 	/* Look at starting Node
 	 * Find incident nodes (neighbors)
 	 * Keep +/- count of unique visited to verify "doneness"
@@ -115,9 +120,9 @@ func (G *graph) path(A node, Z node) []edge {
 	 * Repeat searching edges for A with each neighbor
 	 * considering parsing down edge set to save time on each subsequent pass
 	 */
-	return make([]edge,0,0)
+	return make([]edge, 0, 0)
 }
-func (G *graph) save(relativePathToSaveFile) error {
+func (G *graph) save(relativePathToSaveFile string) error {
 	/* What format would be proper for saving a graph?
 	 * Would one file contain multiple graphs?
 	 * Would I include both edges and Vertices?
@@ -130,21 +135,34 @@ func (G *graph) save(relativePathToSaveFile) error {
 	 */
 	return nil
 }
-func (G *graph) load(relativePathToSaveFile) error {return nil} /* Modifies State of G */
-func (G *graph) deepCopy() *graph {return new(graph)}
-func String(G *graph) string {
-	/* Assume Nodes and Edges are Stringers */
+func (G *graph) load(relativePathToSaveFile string) error { return nil } /* Modifies State of G */
+func (G *graph) deepCopy() *graph                         { return new(graph) }
+func (G *graph) equals(H *graph) bool {
+	/* Mostly care about edge set, but perhaps also node set */
+	/* Cannot directly compare either as both are slices and that op/n is not supported */
+	return false
+}
+func (G *graph) notEqualTo(H *graph) bool { return !G.equals(H) }
+func (G *graph) String() string {
+	return fmt.Sprintf("N:%s")
+}
+func (N *node) String() string {
+	return fmt.Sprint(N.name)
+}
+func (E *edge) String() string {
+	var direction string
+	if E.isDirected {
+		direction = "->"
+	} else {
+		direction = "<->"
+	}
+	return fmt.Sprintf("%s%s%s", E.start, direction, E.end)
 }
 
 type json map[string]interface{}
 
 func newInvalidListing() Listing {
 	return Listing{}
-}
-
-type ValidDataObj interface {
-	isNil()
-	isValid()
 }
 
 func (T *timeSpace) isNil() bool {
@@ -168,7 +186,7 @@ func (L *Listing) isValid() bool {
 
 /* TODO: unexport default methods once testing confirms okay. fmt implies timeSpace should be exported if Record* is */
 
-func makeScrapeStamp(srcURL string) {
+func makeScrapeStamp(srcURL string) timeSpace {
 	stamp := recordCurrentTimeSpace(srcURL)
 	return stamp
 }
@@ -185,7 +203,7 @@ func (L *Listing) String() string {
 	var gift string
 
 	if weWantDefault := true; weWantDefault {
-		gift = makeJSONString(L.json())
+		gift = string(makeJSON(L.json()))
 	} else {
 		gift = L.csv()
 	}
@@ -194,12 +212,12 @@ func (L *Listing) String() string {
 
 func (L *Listing) csv() string {
 	var csvRow = []string{
-		L.Price,
-		L.Depart.DateTime,
+		string(L.Price),
+		L.Depart.DateTime.String(),
 		L.Depart.Location,
-		L.Arrive.DateTime,
+		L.Arrive.DateTime.String(),
 		L.Arrive.Location,
-		L.Scrape.DateTime,
+		L.Scrape.DateTime.String(),
 		L.Scrape.Location,
 	}
 
@@ -221,33 +239,35 @@ func (L *Listing) json() json {
 	return jsonRepr
 }
 
-func makeJSONString(srcJSON json) {
-
+func makeJSON(srcJSONstruct json) []byte {
+	return make([]byte, 0, 0)
 }
 
-func join(delim rune, csvRow []string) {
-
+func join(delim rune, row []string) string {
+	return strings.Join(row, string(delim))
 }
 
 // NewListingsFromJSON is used to import Listing data that has been exported per standard
 func NewListingsFromJSON(srcJSON io.Reader) []Listing {
 	// TODO
+	return make([]Listing, 0, 0)
 }
 
 // NewListingsFromCSV is used to import Listing data that has been exported per standard
 func NewListingsFromCSV(srcCSV io.Reader) []Listing {
 	// TODO
+	return make([]Listing, 0, 0)
 }
 
-func NewListingRand() Listing {
+func newListingRand() Listing {
 	const nanoConvRate = 10 ^ 9
 	var (
 		now       = time.Now().UTC()
 		before    = time.Now().UTC()
 		twentyMin = time.Duration(nanoConvRate * (60 * 20)) // 60 sec/min * 20 min
 		after     = time.Now().UTC().Add(twentyMin)
-		departLoc = chooseLoc(5)
-		arriveLoc = chooseLoc(9)
+		departLoc = "A"
+		arriveLoc = "B"
 		url       = "https://random.local"
 	)
 
@@ -260,27 +280,30 @@ func NewListingRand() Listing {
 }
 
 // Value returns that which should be used in comparisons, this is the Listing price
-func Value(L *Listing) int {
-	return L.Price()
+func (L *Listing) Value() int {
+	return int(L.Price)
 }
 
-func values(collection ...interface{ Value() }) []int {
+func values(collection ...interface{ Value() int }) []int {
 	var values = make([]int, len(collection))
 
-	for v := range collection {
-		values = append(values, Value(v))
+	for _, v := range collection {
+		next := v.Value()
+		values = append(values, next)
 	}
+
+	return values
 }
 
-func max(collection []interface{ Value() }) int {
-	top_value = Value(collection[0])
+func max(collection []interface{ Value() int }) int {
+	var max int = collection[0].Value()
 
-	for val := range values(collection) {
+	for _, val := range values(collection...) {
 
-		if val > top_value {
-			top_value = val
+		if val > max {
+			max = val
 		}
 	}
 
-	return top_value
+	return max
 }
