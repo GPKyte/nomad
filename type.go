@@ -61,7 +61,6 @@ type readable interface {
 	Read() string
 }
 type location struct {
-	node
 	code string
 	name string
 }
@@ -123,12 +122,12 @@ func (G *graph) path(A node, Z node) []edge {
 	return make([]edge, 0, 0)
 }
 func (G *graph) save(relativePathToSaveFile string) error {
-	/* What format would be proper for saving a graph?
-	 * Would one file contain multiple graphs?
-	 * Would I include both edges and Vertices?
-	 * Can information be lossy or must all be retained?
-	 * One line, N lines
-	 * List of edges?
+	/* What format would be proper for saving a graph? JSON all the way down...
+	 * Would one file contain multiple graphs? No
+	 * Would I include both edges and Vertices? Yes
+	 * Can information be lossy or must all be retained? Lossless
+	 * One line, N lines? One line preferred, can expand in tool later to pprint
+	 * List of edges? Instead of node.[]neighbors
 	 * How to represent and reinterpret Nodes?
 	 * Will edge be NodeRepr -> NodeRepr?
 	 * Make it easy to reload graph
