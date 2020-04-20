@@ -67,6 +67,7 @@ func log(msg string) {
 	fmt.Println(msg)
 }
 
+/* DEPRECATED due to lack of generics and strong typing */
 func pickUnique(howMany int, ofThese *[]generic) *[]generic {
 	var seed = 5090716181  // Any number, skip seeding override when determinism wanted
 	rand.Seed(int64(seed)) // Override while considering a rand.Int() soln or when determinism wanted
@@ -88,6 +89,7 @@ func pickUnique(howMany int, ofThese *[]generic) *[]generic {
 	return &chosen
 }
 
+/* DEPRECATED due to lack of generics and strong typing */
 func getKeys(ofThis map[generic]int) (keys []generic) {
 	keys = make([]generic, len(ofThis))
 
