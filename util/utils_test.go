@@ -23,6 +23,25 @@ func TestPermute(t *testing.T) {
 	}
 }
 
+func TestPickUnique(t *testing.T) {
+	type testType generic
+	nums := []testType{
+		{2},
+		{3},
+		{5},
+		{6},
+		{9},
+		{1},
+		{5},
+		{0},
+	}
+
+	var chosen = pickUnique(4, &nums)
+	if len(chosen) != 4 {
+		panic(len(chosen))
+	}
+}
+
 func TestFactorial(t *testing.T) {
 	tests := []struct{ A, B int64 }{
 		{factorial(0), 1},
