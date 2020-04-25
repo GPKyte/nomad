@@ -1,7 +1,9 @@
 package scrape
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"strings"
 	"testing"
 )
@@ -32,6 +34,43 @@ func TestURLArgsHandling(t *testing.T) {
 		// fmt.Printf("goodCount: %v, enoughSubstringsMatch: %v, sameLength: %v", goodCount, foundEnoughMatches, sameLength)
 		t.Fatal(explain(want, got))
 	}
+}
+
+func bad(e error) bool {
+	return e != nil
+}
+
+func head(n int, items ...interface{}) []interface{} {
+	return items[:n]
+}
+
+func TestUnmarshalFromCache(t *testing.T) {
+	responseAsJSON := new(apiResponse)
+	b, err := ioutil.ReadFile("cache/cvg/any/2020.5.7")
+
+	if bad(err) {
+		t.Fatal(err.Error())
+	}
+
+	err = json.Unmarshal(b, responseAsJSON)
+	if bad(err) || len(responseAsJSON.Trips) <= 1 {
+		t.Fatal(err.Error())
+	}
+
+	for _, t := range head(100, responseAsJSON.Trips) {
+		t, ok := t.(trip)
+		if !ok {
+			panic("How the heck could this have happened?")
+		}
+		fmt.Printf("%s: $%v\n", t.City, t.Cost/100)
+	}
+}
+
+func TestScrapeOne2Any(t *testing.T) {
+
+}
+func TestScrapeOne2Another(t *testing.T) {
+
 }
 
 func failedExpectations(want string, got string) bool {
