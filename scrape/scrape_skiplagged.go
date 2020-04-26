@@ -6,7 +6,11 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"time"
 )
+
+// DateFormat for URL param with skiplagged
+const DateFormat = "2006-01-02"
 
 func chooseDate() string     { /* want to use time.Time to format std dates like this */ return "2020-05-07" }
 func chooseLocation() string { return "CVG" }
@@ -82,6 +86,30 @@ func visit(url string, reqHeaders map[string]string) {
 	for _, t := range responseAsJSON.Trips {
 		fmt.Printf("%s: $%v", t.City, t.Cost)
 	}
+}
+
+func getDatesForNextN(days int) []string {
+	now := time.Now()
+	var years, monthsAnd, daysAhead int
+	daysAhead = days
+	andThen := now.AddDate(years, monthsAnd, daysAhead)
+
+	return getDatesBetween(now, andThen)
+}
+
+func getDatesBetween(then, andNow time.Time) []string {
+	const oneDayAtATime = 1
+
+	datesThat := make([]string, 0, 50) /* Setting capacity low because it is expected to be low and can expand peacefully thanks to std Go */
+	shouldBeBefore, this := then, andNow
+
+	allTheTimeThat := func(a, b time.Time) bool { return a.Before(b) }
+
+	for allTheTimeThat(shouldBeBefore, this) {
+		datesThat = append(datesThat, shouldBeBefore.Format(DateFormat))
+		shouldBeBefore = shouldBeBefore.AddDate(0, 0, oneDayAtATime)
+	}
+	return datesThat
 }
 
 type apiResponse struct {

@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestURLArgsHandling(t *testing.T) {
@@ -36,17 +38,32 @@ func TestURLArgsHandling(t *testing.T) {
 	}
 }
 
+func max(a, b int) int {
+	if a >= b {
+		return a
+	}
+	return b
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
 func bad(e error) bool {
 	return e != nil
 }
 
 func head(n int, items ...interface{}) []interface{} {
-	return items[:n]
+	head := min(n, len(items))
+	return items[:head]
 }
 
 func TestUnmarshalFromCache(t *testing.T) {
 	responseAsJSON := new(apiResponse)
-	b, err := ioutil.ReadFile("cache/cvg/any/2020.5.7")
+	b, err := ioutil.ReadFile("cache/cvg/any/2020.5.7.json")
 
 	if bad(err) {
 		t.Fatal(err.Error())
@@ -56,13 +73,47 @@ func TestUnmarshalFromCache(t *testing.T) {
 	if bad(err) || len(responseAsJSON.Trips) <= 1 {
 		t.Fatal(err.Error())
 	}
+}
 
-	for _, t := range head(100, responseAsJSON.Trips) {
-		t, ok := t.(trip)
-		if !ok {
-			panic("How the heck could this have happened?")
+/* Testing for these traits
+* That Dates generated match the expected #, and start/end
+* Format must be accurate, if wrong, inspect struct */
+func TestDateGenerationForURLArgs(t *testing.T) {
+	var locale, _ = time.LoadLocation("UTC")
+	var onceUponATime = time.Date(2050 /*yr*/, 5 /*mo*/, 20 /*d*/, 15 /*hr*/, 0, 0, 0, locale)
+
+	/* Only checking Formatting Once, but all should comply once the Format string const is accurate */
+	if got := onceUponATime.Format(DateFormat); got != "2050-05-20" {
+		panic(got)
+	}
+
+	type testCondition struct {
+		now, then time.Time
+		length    int
+	}
+	testBoundaries := []testCondition{
+		// While other specifics may come up, always test 0, 1, and N
+		{onceUponATime, onceUponATime.AddDate(1, 0, 0), 365}, // Careful about leap year, so determinate start date used
+		{onceUponATime, onceUponATime.AddDate(0, 0, 1), 1},
+		{onceUponATime, onceUponATime, 0},
+	}
+	/* Test expected length of resultant slices */
+	for _, test := range testBoundaries {
+		before, after, want := test.now, test.then, test.length
+		got := getDatesBetween(before, after)
+
+		if len(got) != want {
+			t.Fatalf("\nWanted length:\t%v,\nGot:\t\t%s", want, got)
 		}
-		fmt.Printf("%s: $%v\n", t.City, t.Cost/100)
+	}
+	/* Random Testing additionally used on similar abstracted method */
+	for i := 0; i < 100; i++ {
+		days := rand.Intn(400)
+
+		/* Starting from Tomorrow or Today, TODO: decide later when it gets used more often */
+		if list := getDatesForNextN(days); len(list) != days {
+			t.Fatal("Not enough days generated from getDatesForNext(N(days)")
+		}
 	}
 }
 
