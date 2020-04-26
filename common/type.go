@@ -1,7 +1,7 @@
 package common
 
 import (
-	"fmt"
+	"encoding/json"
 	"io"
 	"strings"
 	"time"
@@ -29,10 +29,6 @@ type trip struct {
 type timeSpace struct {
 	DateTime time.Time
 	Location string /* standardize to lowercase, UTF8 default */
-}
-type readable interface {
-	String() string
-	Read() string
 }
 type location struct {
 	code string
@@ -76,12 +72,12 @@ func recordCurrentTimeSpace(location string) timeSpace {
 	}
 }
 
-// String will return JSON Repr of Listing Or Flat Repr
+// String will return JSON Representation of listing
 func (L *Listing) String() string {
 	var gift string
 
 	if weWantDefault := true; weWantDefault {
-		gift = string(makeJSON(L.json()))
+		gift = string(exportListingAsJSON(L))
 	} else {
 		gift = L.csv()
 	}
@@ -102,9 +98,10 @@ func (L *Listing) csv() string {
 	return join(',', csvRow)
 }
 
-func (L *Listing) json() json {
+/* DEPRECATED in favor of json.Marshall() but keep for custom Marshaller */
+func (L *Listing) json() map[string]interface{} {
 
-	var jsonRepr = json{
+	var jsonRepr = map[string]interface{}{
 		"Price":      L.Price,
 		"DepartTime": L.Depart.DateTime,
 		"DepartLoc":  L.Depart.Location,
@@ -117,8 +114,46 @@ func (L *Listing) json() json {
 	return jsonRepr
 }
 
-func makeJSON(srcJSONstruct json) []byte {
-	return make([]byte, 0, 0)
+/* Wrapper for the Marshalling function in the json library */
+func exportListingAsJSON(L *Listing) []byte {
+	b, err := json.MarshalIndent(L, "", "\t")
+	if err != nil {
+		panic(err)
+	}
+	return b
+}
+
+func importJSONAsListing(data []byte) Listing {
+	var L = newInvalidListing()
+	if err := json.Unmarshal(data, &L); err != nil {
+		panic(err)
+	}
+	return L
+}
+
+func filter(input []byte, filterPredicate func(byte) bool) []byte {
+	var out = make([]byte, len(input))
+
+	for _, b := range input {
+		if filterPredicate(b) {
+			out = append(out, b)
+		}
+	}
+	return out
+}
+
+func importJSONAsListings(data []byte) []Listing {
+	var probableLineCount int = len(filter(data, func(b byte) bool {
+		if b == byte('\n') {
+			return true
+		}
+		return false
+	}))
+	var L = make([]Listing, 2*probableLineCount)
+
+	/* Just assuming magic here for the time being */
+	err := json.Unmarshal(data, &L)
+	return L
 }
 
 func join(delim rune, row []string) string {
