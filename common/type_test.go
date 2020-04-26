@@ -11,17 +11,11 @@ func TestRandomListingGen(t *testing.T) {
 	if L.Arrive.Location == L.Depart.Location {
 		t.Fail()
 	}
-
 }
 
-func TestConvListingToGraphDetail(t *testing.T) {
-	/* Generate listings by random */
-	/* Inspect Mode on IF not expected output */
-	/* Need what data? Listing.src,dest,time,duration,price */
-	var L *Listing = new(Listing)
-	L.Arrive.Location = chooseLocation()
-	L.Depart.Location = chooseLocation()
-	L.Price = 8
+func chooseLocation() string {
+	var locs = []string{"A", "B", "C", "D", "E"}
+	return locs[rand.Intn(5)]
 }
 
 func TestGetDurationOfTrip(t *testing.T) {
@@ -31,39 +25,22 @@ func TestGetDurationOfTrip(t *testing.T) {
 	var L = NewListingRand()
 }
 
-func TestSaveAndLoadNewGraph(t *testing.T) {
-	/* TODO: Decide whether preferred to overwrite files (simple) or deal with naming conventions */
-	/* Start data Prep work */
-	var G = new(Graph)
-	var nodes []GraphNode
-	var edges []GraphEdge
-
-	anySmallNum := 4
-	locations := getAirportLocations()
-	locations = pick(anySmallNum, locations)
-	intoPairs := 2
-	trips := combine(locations, intoPairs)
-	edges = makeEdgesFrom(trips)
-
-	for n := range nodes {
-		err = G.addNode(n)
-		log(err)
-	}
-	for e := range edges {
-		err = G.addEdge(e)
-		log(err)
-	}
-	cacheDir := "test/cache/graph/"
-	saveFile := cacheDir + "G0"
-	G.save(saveFile)
-	/* TODO: Test expected file exists */
-	H := new(Graph)
-	if G.equals(H) {
-		t.FailNow()
+	locationCache, err := ioutil.ReadFile("../resources/test/cache/locations.json")
+	if err != nil {
+		panic(err)
 	}
 
-	H.load(saveFile)
-	if G.notEqualTo(H) {
-		t.FailNow()
+	if err := json.Unmarshal(locationCache, locationsRaw); err != nil {
+		panic(err)
+	}
+
+	for _, L := range locationsRaw {
+		result = append(result, location{L.name, L.code})
+	}
+	return result
+}
+	}
+	}
+
 	}
 }
