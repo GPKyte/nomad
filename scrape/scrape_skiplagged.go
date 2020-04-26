@@ -4,13 +4,22 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
+	"math/rand"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 )
 
 // DateFormat for URL param with skiplagged
 const DateFormat = "2006-01-02"
+
+const (
+	/* Dir must end in trailing slash and files must be typed */
+	pathToLocationCache = "cache/locations.json"
+	pathToTripCacheDir  = "cache/trips/"
+)
 
 func chooseDate() string     { /* want to use time.Time to format std dates like this */ return "2020-05-07" }
 func chooseLocation() string { return "CVG" }
@@ -25,41 +34,71 @@ func concatURLArgs(kv map[string]string) string {
 	return strings.Join(cat, "&")
 }
 
-func main() {
-	// Build Request Headers
-	// format URL to visit
-	// Decide some initial values, or create them dynamically for trips to find
-	//      Consider leaving open for config
-	//
-
+func formatURL(from, depart string) string {
 	urlargs := map[string]string{
-		"from":   chooseLocation(),
-		"depart": chooseDate(), // YYYY-MM-DD
-		"return": "",
+		"from":   from,
+		"depart": depart,
+		"return": "", /* No Roundtrip searches */
 		"format": "v2",
-		"_":      "1587607414580", // Probably a timer of sorts
+	}
+	return fmt.Sprintf("http://skiplagged.com/api/skipsy.php?%s", concatURLArgs(urlargs))
+}
+
+/* Helps to return top N airports which will be a focus of focused outbound trips */
+func getYourMostFrequentLayoverAirports() []string {
+	top := make([]string, 0, 10)
+	/* Once statistical methods are prevalent as utils, revisit this method */
+	cache := loadCacheOfAirports()
+
+	for i := range top {
+		top[i] = cache[rand.Intn(len(cache))]
 	}
 
-	reqHeaders := map[string]string{
-		"Accept":                    "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-		"Accept-Encoding":           "gzip, deflate",
-		"Accept-Language":           "en-US,en;q=0.5",
-		"Cache-control":             "max-age=0",
-		"Connection":                "keep-alive",
-		"DNT":                       "1",
-		"Cookie":                    "session=a6d88f9a76de15278402f46a047b0724; currencyRate=1; currencyFormat=%24%7Bamount%7D; currencyCode=USD; when=2020-05-07; whenBack=; G_ENABLED_IDPS=google",
-		"Upgrade-Insecure-Requests": "1",
-		"User-Agent":                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:75.0) Gecko/20100101 Firefox/75.0",
+	return top
+}
+
+/* There are roughly 80-120 Airports depending on scope of site */
+func loadCacheOfAirports() (airports []string) {
+	type airport struct {
+		Code string `json:"code"`
+	}
+	var loaderStruct = make([]*airport, 0, 200)
+
+	raw, err := ioutil.ReadFile(pathToLocationCache)
+	if err != nil {
+		log.Fatal(err.Error())
 	}
 
-	url := fmt.Sprintf("http://skiplagged.com/api/skipsy.php?%s", concatURLArgs(urlargs))
-	// Visit site
-	visit(url, reqHeaders)
-	// Check response for errors, if any wait and try again up to so many times
+	err = json.Unmarshal(raw, &loaderStruct)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
-	// Open response in json and parse to trips
-	// Use combo of custom Unmarshalling and interpretation to create Listings. Consider how to be 'lax on timing aspect. Choose middle of day?
+	/* Reduce data to just the airport code before sending back []string */
+	for _, loc := range loaderStruct {
+		airports = append(airports, string(loc.Code))
+	}
 
+	return airports
+}
+
+/* Overwrite (should be infrequent) the known cache of airport locations
+ * Format is NOT Validated, be careful to follow conventions or be surprised
+ * Intended for use with the data from skiplagged API in the future */
+func updateCacheOfAirports(withNewJSON []byte) error {
+	var mode = os.FileMode(int(0777))
+	err := ioutil.WriteFile(pathToLocationCache, withNewJSON, mode)
+	return err
+}
+
+/* Idea is to look for deals out of popular pit stops then later find deals to those pitstops and beyond
+ * checkOutBoundFromMajorAirports will check fare from selected airports for the next N=5 days from date provided */
+func checkOutboundFromMajorAirports(fromThisDay time.Time) {
+	for _, airport := range getYourMostFrequentLayoverAirports() {
+		for _, date := range getDatesBetween(fromThisDay, fromThisDay.AddDate(0, 0, 5 /*days*/)) {
+			visit(formatURL(airport, date))
+		}
+	}
 }
 
 type logger struct{}
@@ -69,8 +108,17 @@ func (L *logger) Write(p []byte) (n int, err error) {
 	return len(p), nil
 }
 
-func visit(url string, reqHeaders map[string]string) {
-	fmt.Println(url)
+func visit(url string) {
+	/* TODO
+	 * Cache either parsed or original data using a timestamp filename
+	 * URL holds some meta data we might want to use, but avoid this
+	 * In every case we want what?
+	 * To receive Listings as they become available?
+	 * To download the requested page to memory&disk?
+	 * To return Trips?
+	 * ...
+	 */
+	log.Println(url)
 	resp, err := http.Get(url)
 
 	if err != nil {

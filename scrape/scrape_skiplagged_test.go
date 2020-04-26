@@ -117,6 +117,27 @@ func TestDateGenerationForURLArgs(t *testing.T) {
 	}
 }
 
+func emptyStringSlice(this []string) bool {
+	return len(this) == 0
+}
+
+func TestLoadCacheOfAirports(t *testing.T) {
+	airports := loadCacheOfAirports()
+
+	if emptyStringSlice(airports) {
+		t.Fatal("Empty results from loading cache of airports")
+	}
+
+	if len(airports[0]) != len("CVG") {
+		t.Fatalf("Wrong format:\t%s\n\tXYZ three digit code preferred for Airports", airports[0])
+	}
+}
+
+func TestInspectRecentTestResults(t *testing.T) {
+	t.SkipNow()
+	fmt.Println(loadCacheOfAirports())
+}
+
 func TestScrapeOne2Any(t *testing.T) {
 
 }
