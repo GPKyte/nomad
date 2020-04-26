@@ -1,4 +1,4 @@
-package util
+package common
 
 /* TODO Research way of generalizing */
 

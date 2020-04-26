@@ -1,4 +1,4 @@
-package nomad
+package common
 
 import (
 	"fmt"
