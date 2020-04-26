@@ -9,8 +9,6 @@ import (
 	"strings"
 )
 
-type generic struct{}
-
 func factorial(n int64) (product int64) {
 	product = 1
 	for i := int64(1); i <= n; i++ {
@@ -40,6 +38,42 @@ func permute(original ...interface{}) [][]interface{} {
 	return perms
 }
 
+/* Sends back two slices of int indices which describe the combos when iterated through */
+/* Guaranteed that pairs do not contain same index twice, e.g. (1,2) isValid but (8,8) isNotValid */
+/* Order does matter, e.g. (1,3) and (3,1) are distinct */
+func pairs(sizeOfCollection int) (A []int, B []int) {
+	if sizeOfCollection <= 1 {
+		return nil, nil
+	}
+	var anySmallNumberOfPairs = 12
+	var maxPairs = sizeOfCollection * (sizeOfCollection - 1) // Order matters (1,3) and (3,1) are distinct
+
+	// get some n pairs
+	for count := 0; count < anySmallNumberOfPairs; {
+		a, b := rand.Intn(sizeOfCollection), rand.Intn(sizeOfCollection)
+		if a != b {
+			A = append(A, a)
+			B = append(B, b)
+			count++
+		}
+	}
+	/* Alt to get all pairs (in order)
+	for left := 0; left < sizeOfCollection; left++ {
+		for right := 0; right < sizeOfCollection; right++ {
+			if a != b {
+				A = append(A, a)
+				B = append(B, b)
+			}
+		}
+	}*/
+	if len(A) != len(B) {
+		// Could note the size of collection and other details like len(A) or B
+		panic("Size mismatch in pairs()")
+	}
+
+	return A, B
+}
+
 func writeFile(filepath string, data []byte) error {
 	var readAndWriteMode os.FileMode = 666 // No point in making it executable too
 	return ioutil.WriteFile(filepath, data, readAndWriteMode)
@@ -65,37 +99,4 @@ func readFileByLine(filepath string, delim ...string) []string {
 
 func log(msg string) {
 	fmt.Println(msg)
-}
-
-/* DEPRECATED due to lack of generics and strong typing */
-func pickUnique(howMany int, ofThese *[]generic) *[]generic {
-	var seed = 5090716181  // Any number, skip seeding override when determinism wanted
-	rand.Seed(int64(seed)) // Override while considering a rand.Int() soln or when determinism wanted
-
-	if howMany > len(*ofThese) { // Sanity check
-		panic(howMany)
-	}
-
-	// Build up a map to select unique elements and ignore repeats
-	var uniquePicks = make(map[generic]int, howMany)
-	for len(uniquePicks) < howMany {
-		p := rand.Int() % len(*ofThese)
-		thisPick := (*ofThese)[p]
-		uniquePicks[thisPick]++
-	}
-
-	// Retrieve keys into a simple slice and return address of it
-	var chosen = getKeys(uniquePicks)
-	return &chosen
-}
-
-/* DEPRECATED due to lack of generics and strong typing */
-func getKeys(ofThis map[generic]int) (keys []generic) {
-	keys = make([]generic, len(ofThis))
-
-	for k := range ofThis {
-		keys = append(keys, k)
-	}
-
-	return keys
 }
