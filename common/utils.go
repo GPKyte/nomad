@@ -74,6 +74,35 @@ func pairs(sizeOfCollection int) (A []int, B []int) {
 	return A, B
 }
 
+/* Do we concern with the potential overhead of passing by value structs? */
+/* Because we know not enough and the compiler is very good, let's say no for now */
+func (slice *[]TimeAndPlace) sort(leastToGreatest bool) []TimeAndPlace {
+	/* Insertion sort for elements which may already be closely in order */
+	var endSorted = 0
+	var total = len(slice)
+	var S = make([]TimeAndPlace, 0, total)
+
+	/* Get next element */
+	var unsorted = make(chan []TimeAndPlace)
+	for i := range slice {
+		unsorted <- slice[i : i+1]
+	}
+
+	/* Insert into sorted array logic */
+	for len(sorted) < total {
+		next <- unsorted
+
+		endSorted++
+		for insertHere := 0; insertHere < endSorted; insertHere++ {
+			if next.Before(slice[insertHere]) {
+				S = append(S[:insertHere], append(next, S[insertHere:]))
+			}
+		}
+	}
+
+	return
+}
+
 func writeFile(filepath string, data []byte) error {
 	var readAndWriteMode os.FileMode = 666 // No point in making it executable too
 	return ioutil.WriteFile(filepath, data, readAndWriteMode)
