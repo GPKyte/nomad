@@ -1,24 +1,40 @@
-# Discount Nomad
+# N.O.M.A.D.D.
 
+Naïeve Omnidirectional Machine-Automated Discount Dicovery
 A set of tools with the common purpose of finding great opportunities to travel. Intend to leverage Web Scraping, Data Analytics, Graph Theory, Concurrency, and more to find cheap flights, interesting travel routes, and delegate the act of searching to an automated system using minimal background resources and compact storage methods
+
 
 ### Motivation
 
 Every moment, opportunities to live and experience new cultures fade away. Because it is impossible to delegate all personal time to searching for travel opportunities, cheap travel options go unnoticed. In their wake, loom expensive tickets that steal from tight budgets better spent far away than online. Instead of missing great deals, delegate the tedium of searching to an automaton
 
-## Requirements
 
 ## Usage
 
+`go run nomad [--OPTION...]`
+
+### Flags
+
+Passive and Active actions are being implemented and include:
+  `--scrape`          Begins scraping default queries in the background. Compare to terminal operator & in `action &`
+  `--discover`        
+  `--config`          Modify settings that guide certain data collection decisions
+  `--build-cached`    Use cached data to build Graph
+  `--display-cached`
+  `--help`            Display the usage`
+
+### Testing
+
+Effort is taking to test 0, 1, n boundary cases, any clear expectations of transformations, and algorithmic correctness when feasible
+Testing is directed through the go standard library.
+  `go test`
+  `go test <package_name>`
+
+
 ## Contributions
 
-Any contributions are welcome! Follow some of these guide lines and suggestions and Pull Request any changes you've made and tested
+Any contributions are welcome! Pull Request any changes, and consider writing a small test to demonstrate what you expect to change.
 
-  Polymorphism
-  Don’t Repeat Yourself (DRY)
-	Build own Data Struct & Algorithms where practical and non-distracting
-
-## Results
 
 ## Possible Modules + API and structure of project
 * SecureCredentials Implements CleanDataConstant
@@ -32,7 +48,6 @@ Any contributions are welcome! Follow some of these guide lines and suggestions 
 * Parse.HTML
 * Parse.Listing
 * Parse.XYZ
-* Logger (Should be abstracted even if logging with a good std libr)
 
 ## DevOps:
 * Configuration file (git ignore)
@@ -64,15 +79,4 @@ Any contributions are welcome! Follow some of these guide lines and suggestions 
     - View detail summaries for top-priority listings
     - Track listings meeting criteria for a time range and a set of destinations
     - Create complex routes with optimal layovers (optimal for traveling to a pit-stop city)
-
-
-## Development ideas:
-    Pair programming?? Help other Sen Sem projects/ be soundboard
-    Use AI + Structured NLP to identify key information in page?
-    Structure of DB? Relational?
-
-
-## Norms:
-"Data, POJO, immutable data" What to call this in naming consistently?
-Requesting all of the pages is the biggest time sink when scraping — it's good to avoid having to do any portion of that again, if possible. => Use Cached system separating scrape / parse / ETL
 
