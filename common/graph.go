@@ -1,47 +1,67 @@
 package common
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
+
+/* Design Questions
+ * Is the graph weighted? Yes
+ * Is there custom traversal logic? Not in this impl
+ * How will the s=structure be used? s will find paths of low cost, and provide them for review
+ * What algorithms support Pathfinding? A*
+ * Will my graph be sparse or dense? Sparse
+ * We will use a adjacency list, i.e. edges go in a (sorted) list, AND into
+ *
+ * What algorithm can identify which airports are most heavily traversed and in-a-way useful?
+ * How should I tag my data to know if it was crafted to answer specific questions?
+ * 		Just that, a tag. Easy to add a field to a datastruct and Marshall that to JSON or the DB we don't have
+ * How should I deal with non-standard names? */
 
 // Graph is a weighted and digraph impl with focus on short path Traversals
 // Nodes and edges are kept as slices, sorted for faster minCost selection
-type Graph struct {
-	nodes []node
+type graph struct {
+	nodes []nodeList
 	edges []edge
-}
-type node struct {
-	value interface{}
-	index int
-}
-type edge struct {
-	start  int
-	end    int
-	weight int
+	shortcut map[TimeAndPlace]node
 }
 
-func newGraphFrom(N []node, E []edge) *graph {
+func (G *graph) getNode(fromReferenceToThis TimeAndPlace) (node, error) {
+	if G.has(fromReferenceToThis) {
+		return G.shortcut[fromReferenceToThis]
+	}
+	return fmt.Errorf("Could not find Node: %s", fromReferenceToThis)
+}
+
+func ()
+
+func newGraphFrom(rawNodes []TimeAndPlace, rawEdges []trip) *graph {
 	G := new(graph)
 
-	for _, ne := range N {
-		G.addNode(ne)
+	for i, ne := range rawNodes {
+		G.addNode(node{value: ne, index: i})
 	}
-	for _, ew := range E {
-		G.addEdge(ew)
+	for _, ew := range rawEdges {
+		G.addEdge(G.get(ew.depart), G.get(ew.arrive), ew.price)
 	}
 	return G
 }
 func (G *graph) addEdge(e edge) error {
-	if !(G.hasNode(e.start) && G.hasNode(e.end)) {
-		panic("Missing Node")
+	if !(G.hasNode(e.start) || !G.hasNode(e.end)) {
+		panic("Missing Node to Edge")
 	}
+
 	G.edges = append(G.edges, e)
 	return nil
 }
 func (G *graph) addNode(n node) error {
 	n.index = len(G.nodes)
 	G.nodes = append(G.nodes, n)
+
 	if G.nodes[n.index] != n {
 		panic("Location of node in graph is errant")
 	}
+
 	return nil
 }
 func (G *graph) getAnyNode() node { return G.nodes[0] }
@@ -53,8 +73,7 @@ func (G *graph) getByValue(want interface{}) int {
 	}
 	return -1
 }
-func (G *graph) delEdge(e edge) error { return nil }
-func (G *graph) delNode(n node) error { return nil } /* Also removes all edges with node */
+
 func (G *graph) hasEdge(start, end int) bool {
 	for _, any := range G.edges {
 		if any.start == start && any.end == end {
@@ -63,12 +82,22 @@ func (G *graph) hasEdge(start, end int) bool {
 	}
 	return false
 }
-func (G *graph) hasNode(index int) bool {
-	return index < len(G.nodes)
+
+func (G *graph) has(some interface{}) bool {
+	switch some.(type) {
+	case TimeAndPlace:
+		return G.shortcut[some.(TimeAndPlace)]
+	case node:
+		return G.nodes[some.(node).index]
+	case edge:
+		e := some.(edge)
+		return hasEdge(e.start.index, e.end.index)
+	default:
+		return false
+	}
 }
-func (G *graph) isConnected() bool   { return false }
-func (G *graph) isTraversable() bool { return false }
-func (G *graph) isHamiltonian() bool { return false }
+
+func (G *graph) isConnected() bool { return false }
 func (G *graph) getHamiltonianCycle() []edge {
 	var cycle []edge
 	/* Traverse all Nodes at least, and preferably just once */
@@ -103,6 +132,8 @@ func (G *graph) path(A node, Z node) []edge {
 	 * Repeat searching edges for A with each neighbor
 	 * considering parsing down edge set to save time on each subsequent pass
 	 */
+	Q = new(Queue)
+
 	return make([]edge, 0, 0)
 }
 func (G *graph) save(relativePathToSaveFile string) error {
@@ -119,7 +150,6 @@ func (G *graph) save(relativePathToSaveFile string) error {
 	return nil
 }
 func (G *graph) load(relativePathToSaveFile string) error { return nil } /* Modifies State of G */
-func (G *graph) deepCopy() *graph                         { return new(graph) }
 func (G *graph) equals(H *graph) bool {
 	/* Mostly care about edge set, but perhaps also node set */
 	/* Cannot directly compare either as both are slices and that op/n is not supported */
@@ -129,10 +159,36 @@ func (G *graph) notEqualTo(H *graph) bool { return !G.equals(H) }
 func (G *graph) String() string {
 	return fmt.Sprintf("N:%s")
 }
+
+
 func (N *node) String() string {
-	return fmt.Sprint(n.index)
+	return fmt.Sprint(N.index)
 }
+
+type node struct {
+	value TimeAndPlace
+	index int
+}
+
+type nodeList []node
+
+func (slice nodeList) Len() int {
+	return len(slice)
+}
+func (slice nodeList) Less(i, j int) bool {
+	return slice[i] < slice[j]
+}
+func (slice nodeList) Swap(i, j int) {
+	slice[i], slice[j] = slice[j], slice[i]
+}
+
+type edge struct {
+	start  int
+	end    int
+	weight int
+}
+
 func (E *edge) String() string {
-	var direction string = ":"
+	var direction string = "->"
 	return fmt.Sprintf("%s%s%s", E.start, direction, E.end)
 }
