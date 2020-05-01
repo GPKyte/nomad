@@ -2,6 +2,7 @@ package common
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"strings"
 	"time"
@@ -15,21 +16,34 @@ type Listing struct {
 	Depart     timeSpace
 	Arrive     timeSpace
 	Scrape     timeSpace
-	Price      int16
+	Price      money
 	srcContent string
 }
 
-type trip struct {
-	startArea location
-	endArea   location
-	startTime time.Time
-	endTime   time.Time
-	price     int
+// Trip connects two TimeAndPlace for some cost
+type Trip struct {
+	depart TimeAndPlace
+	arrive TimeAndPlace
+	cost   money
 }
+
+type money int32
+
 type timeSpace struct {
 	DateTime time.Time
 	Location string /* standardize to lowercase, UTF8 default */
 }
+
+// TimeAndPlace is used as a special node in a normal graph impl */
+type TimeAndPlace struct { // Absolutely a duplicate of timeSpace
+	T time.Time
+	P string
+}
+
+func (T *TimeAndPlace) String() string {
+	return fmt.Sprintf("%s @%s", T.P, T.T)
+}
+
 type location struct {
 	code string
 	name string
@@ -219,4 +233,9 @@ func max(collection []interface{ Value() int }) int {
 	}
 
 	return max
+}
+
+// Before is a wrapper around time package's Before method. Useful for sorting/comparison
+func (tp *TimeAndPlace) Before(otherTime TimeAndPlace) bool {
+	return tp.T.Before(otherTime.T)
 }
