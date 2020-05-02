@@ -1,4 +1,4 @@
-package scrape
+package nomad
 
 import (
 	"math/rand"

@@ -1,4 +1,4 @@
-package nomad
+package scrape
 
 import (
 	"encoding/json"

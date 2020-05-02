@@ -1,4 +1,4 @@
-package nomad
+package scrape
 
 import (
 	"encoding/json"
@@ -44,7 +44,7 @@ func (T *TimeAndPlace) String() string {
 	return fmt.Sprintf("%s @%s", T.P, T.T)
 }
 
-type location struct {
+type Location struct {
 	code string
 	name string
 }
@@ -79,10 +79,10 @@ func makeScrapeStamp(srcURL string) timeSpace {
 	return stamp
 }
 
-func recordCurrentTimeSpace(location string) timeSpace {
+func recordCurrentTimeSpace(Location string) timeSpace {
 	return timeSpace{
 		DateTime: time.Now().UTC(),
-		Location: location,
+		Location: Location,
 	}
 }
 
@@ -242,4 +242,15 @@ func max(collection []interface{ Value() int }) int {
 // Before is a wrapper around time package's Before method. Useful for sorting/comparison
 func (T *TimeAndPlace) Before(otherTime TimeAndPlace) bool {
 	return T.T.Before(otherTime.T)
+}
+
+func getLocationsByCode(codes ...string) []Location {
+	var rez = make([]Location, len(codes))
+	// Eventually will have mechanism for looking up known locations against a DB which has meta data on them
+	for _, each := range codes {
+		// For now, just give the caller what they want
+		rez = append(rez, Location{name: "Unprovided", code: each})
+	}
+
+	return rez
 }
