@@ -8,13 +8,16 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
 
 // DateFormat for URL param with skiplagged
-const DateFormat = "2006-01-02"
-
+const (
+	DateFormat = "2006-01-02"
+	UnixMilli  = "05000"
+)
 const (
 	/* Dir must end in trailing slash and files must be typed */
 	pathToLocationCache = "cache/locations.json"
@@ -88,9 +91,10 @@ func concatURLArgs(kv map[string]string) string {
 
 func formatURL(from, to Location, prettyDate string) string {
 	// Example: https://skiplagged.com/api/search.php?from=CLE&to=SVQ&depart=2020-05-16&return=&poll=true&format=v3&_=1588452120703
-	currentTime := string(time.Now().Unix())
+	currentTime := strconv.FormatInt(time.Now().Unix()*1000, 10)
+
 	if len("1588452120703") != len(currentTime) {
-		panic("Wrong time format! Should be in milliseconds (Unix)")
+		panic(fmt.Sprintf("Wrong time format! Should be in milliseconds (Unix), %v", currentTime))
 	}
 
 	urlargs := map[string]string{
@@ -209,11 +213,10 @@ func visit(url string) {
 
 	var responseAsJSON apiResponse
 	json.Unmarshal(b, &responseAsJSON)
-
 }
 
 func waitVariableTime() {
-	const minimumWait = 10 /*seconds*/
-	seconds := time.Duration(minimumWait+rand.Intn(200)) * time.Second
+	const minimumWait = 2 /*seconds*/
+	seconds := time.Duration(minimumWait+rand.Intn(20)) * time.Second
 	time.Sleep(seconds)
 }
