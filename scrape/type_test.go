@@ -30,7 +30,7 @@ func getAirportLocations() []Location {
 		panic(err)
 	}
 
-	if err := json.Unmarshal(locationCache, locationsRaw); err != nil {
+	if err := json.Unmarshal(locationCache, &locationsRaw); err != nil {
 		panic(err)
 	}
 
@@ -63,4 +63,13 @@ func pick(howMany int, ofThese []Location) []Location {
 	}
 
 	return chosen
+}
+
+func TestGetLocationsByCode(t *testing.T) {
+	from := getLocationsByCode("CLE", "CVG", "PIT")
+	to := getLocationsByCode("DEN", "PIE", "LAX")
+
+	if len(from) != 3 || len(to) != 3 {
+		t.Fatalf("Unexpected number of results! Got: %s", from)
+	}
 }
