@@ -10,6 +10,8 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/wander_bot/common"
 )
 
 // DateFormat for URL param with skiplagged
@@ -101,6 +103,50 @@ func checkOutboundFromMajorAirports(fromThisDay time.Time) {
 	}
 }
 
+func buildURLRequest(from, to common.Location, yyyy-mm-dd string) {
+	request := map[string]string{
+		"from":   from.Code,
+		"to":     to.Code,
+		"depart": yyyy-mm-dd,
+		"return": "", /* No Roundtrip searches */
+		"format": "v2",
+	}
+
+	url := formatURLArgs(request)
+	return url
+}
+
+// Determine the impact of Booking ahead of Departure date by N days
+// Find patterns of "best" for N
+// This only collects data and tags it for this purpose
+func askWhenTheEarlyBirdRises() {
+	/* Define a handful of static locations to use as reference points */
+	/* It is important to also record airline information when present */
+	/* Look as soon as next day and up to 6mo */
+	/* This means # Requests = X routes * (30*6 dates) */
+	/* That's about 500 Requests, this should happen infrequently, like each month */
+	from := []string{"CLE", "CVG", "PIT"}
+	to := []string{"DEN", "PIE", "LAX"}
+	response := make(chan []byte)
+
+	for w := range from {
+		/* As we learn more, be more selective with dates checked */
+		for _, date := range getDatesForNextN(60 /* days */) {
+			url := buildURLRequest(from[w], to[w], date)
+			response <- fakeVisit(url)
+
+			waitVariableTime()
+		}
+	}
+
+	/* Collect and interpret results as they arrive */
+	processFareData := func() {
+		data <- response
+		print(response)
+	}
+
+}
+
 type logger struct{}
 
 func (L *logger) Write(p []byte) (n int, err error) {
@@ -118,7 +164,7 @@ func visit(url string) {
 	 * To return Trips?
 	 * ...
 	 */
-	log.Println(url)
+	log.Println("Visiting: ", url)
 	resp, err := http.Get(url)
 
 	if err != nil {
@@ -131,9 +177,6 @@ func visit(url string) {
 	var responseAsJSON apiResponse
 	json.Unmarshal(b, &responseAsJSON)
 
-	for _, t := range responseAsJSON.Trips {
-		fmt.Printf("%s: $%v", t.City, t.Cost)
-	}
 }
 
 func getDatesForNextN(days int) []string {
@@ -168,4 +211,14 @@ type trip struct {
 	City       string `json:"city"`
 	Cost       int    `json:"cost"`
 	HiddenCity bool   `json:"hiddenCity"`
+}
+
+func waitVariableTime() {
+	const minimumWait = 10 /*seconds*/
+	seconds = minimum + rand.Intn(200) * time.Second
+	time.Sleep(seconds)
+}
+
+func fakeVisit(url string) {
+	return fmt.Sprintf(url)
 }

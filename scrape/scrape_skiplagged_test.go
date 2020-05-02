@@ -10,6 +10,10 @@ import (
 	"time"
 )
 
+const (
+	Verbose = false
+)
+
 func TestURLArgsHandling(t *testing.T) {
 	var args = map[string]string{
 		"1":  "are",
@@ -70,8 +74,18 @@ func TestUnmarshalFromCache(t *testing.T) {
 	}
 
 	err = json.Unmarshal(b, responseAsJSON)
-	if bad(err) || len(responseAsJSON.Trips) <= 1 {
+	trips := responseAsJSON.Trips
+
+	if bad(err) || len(trips) <= 1 {
 		t.Fatal(err.Error())
+	}
+	any := trips[rand.Intn(len(trips))].City
+	if Verbose {
+		fmt.Printf("Just to check...Found a trip from CVG to %s\n", any)
+
+		for _, t := range trips {
+			fmt.Println(t.City, " ", t.Cost)
+		}
 	}
 }
 
@@ -115,6 +129,10 @@ func TestDateGenerationForURLArgs(t *testing.T) {
 			t.Fatal("Not enough days generated from getDatesForNext(N(days)")
 		}
 	}
+}
+
+func TestCheckWhenEarlyBirdRises(t *testing.T) {
+	checkWhenEarlyBirdRises()
 }
 
 func emptyStringSlice(this []string) bool {
