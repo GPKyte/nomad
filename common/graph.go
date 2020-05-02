@@ -2,8 +2,18 @@ package common
 
 import (
 	"fmt"
-	"sort"
 )
+
+type node struct {
+	value TimeAndPlace
+	label int
+}
+type nodeList []node
+type edge struct {
+	start  int
+	end    int
+	weight int
+}
 
 /* Design Questions
  * Is the graph weighted? Yes
@@ -21,46 +31,56 @@ import (
 // Graph is a weighted and digraph impl with focus on short path Traversals
 // Nodes and edges are kept as slices, sorted for faster minCost selection
 type graph struct {
-	nodes []nodeList
-	edges []edge
+	nodes    []node
+	edges    map[int][]edge
 	shortcut map[TimeAndPlace]node
 }
 
 func (G *graph) getNode(fromReferenceToThis TimeAndPlace) (node, error) {
 	if G.has(fromReferenceToThis) {
-		return G.shortcut[fromReferenceToThis]
+		return G.shortcut[fromReferenceToThis], nil
 	}
-	return fmt.Errorf("Could not find Node: %s", fromReferenceToThis)
+	return node{}, fmt.Errorf("Could not find Node: %s", fromReferenceToThis)
 }
 
-func ()
+func (G *graph) get(fromThisValue TimeAndPlace) (label int) {
+	return G.shortcut[fromThisValue].label
+}
 
-func newGraphFrom(rawNodes []TimeAndPlace, rawEdges []trip) *graph {
+func newGraphFrom(rawNodes []TimeAndPlace, rawEdges []Trip) *graph {
 	G := new(graph)
+	G.nodes = make([]node, len(rawNodes))
+	G.edges = make(map[int][]edge)
+	G.shortcut = make(map[TimeAndPlace]node)
 
 	for i, ne := range rawNodes {
-		G.addNode(node{value: ne, index: i})
+		G.addNode(node{ne, i})
 	}
 	for _, ew := range rawEdges {
-		G.addEdge(G.get(ew.depart), G.get(ew.arrive), ew.price)
+		G.addEdge(G.get(ew.depart), G.get(ew.arrive), int(ew.cost))
 	}
 	return G
 }
-func (G *graph) addEdge(e edge) error {
-	if !(G.hasNode(e.start) || !G.hasNode(e.end)) {
-		panic("Missing Node to Edge")
+
+// addEdge between ALREADY EXISTING nodes referenced by their labels
+func (G *graph) addEdge(to, from, weight int) error {
+	if !G.has(to) || !G.has(from) {
+		/* TODO: Save and display context of Graph at this moment and log it */
+		return fmt.Errorf("Missing at least one node to add new edge")
 	}
 
-	G.edges = append(G.edges, e)
+	/* Init empty list */
+	if G.edges[to] == nil || len(G.edges[to]) == 0 {
+		G.edges[to] = make([]edge, 10) /* Choose a low capacity based on current expectations, can always grow out as needed */
+	}
+
+	G.edges[to] = append(G.edges[to], edge{from, to, weight})
+
 	return nil
 }
 func (G *graph) addNode(n node) error {
-	n.index = len(G.nodes)
-	G.nodes = append(G.nodes, n)
-
-	if G.nodes[n.index] != n {
-		panic("Location of node in graph is errant")
-	}
+	G.nodes[n.label] = n
+	G.shortcut[n.value] = n
 
 	return nil
 }
@@ -68,15 +88,15 @@ func (G *graph) getAnyNode() node { return G.nodes[0] }
 func (G *graph) getByValue(want interface{}) int {
 	for _, node := range G.nodes {
 		if node.value == want {
-			return node.index
+			return node.label
 		}
 	}
 	return -1
 }
 
 func (G *graph) hasEdge(start, end int) bool {
-	for _, any := range G.edges {
-		if any.start == start && any.end == end {
+	for _, any := range G.edges[start] {
+		if any.end == end {
 			return true
 		}
 	}
@@ -86,22 +106,24 @@ func (G *graph) hasEdge(start, end int) bool {
 func (G *graph) has(some interface{}) bool {
 	switch some.(type) {
 	case TimeAndPlace:
-		return G.shortcut[some.(TimeAndPlace)]
+		return G.shortcut[some.(TimeAndPlace)].label >= 0
 	case node:
-		return G.nodes[some.(node).index]
+		return G.nodes[some.(node).label].label >= 0
 	case edge:
 		e := some.(edge)
-		return hasEdge(e.start.index, e.end.index)
+		return G.hasEdge(e.start, e.end)
 	default:
 		return false
 	}
 }
 
 func (G *graph) isConnected() bool { return false }
+
+//DEPRECATED
 func (G *graph) getHamiltonianCycle() []edge {
 	var cycle []edge
 	/* Traverse all Nodes at least, and preferably just once */
-	if !(G.isConnected()) || !(G.isTraversable()) {
+	if !G.isConnected() {
 		cycle = make([]edge, 0)
 	} else {
 		cycle = G.doTraversal(G.getAnyNode(), true)
@@ -132,7 +154,6 @@ func (G *graph) path(A node, Z node) []edge {
 	 * Repeat searching edges for A with each neighbor
 	 * considering parsing down edge set to save time on each subsequent pass
 	 */
-	Q = new(Queue)
 
 	return make([]edge, 0, 0)
 }
@@ -160,32 +181,18 @@ func (G *graph) String() string {
 	return fmt.Sprintf("N:%s")
 }
 
-
 func (N *node) String() string {
-	return fmt.Sprint(N.index)
+	return fmt.Sprint(N.label)
 }
-
-type node struct {
-	value TimeAndPlace
-	index int
-}
-
-type nodeList []node
 
 func (slice nodeList) Len() int {
 	return len(slice)
 }
 func (slice nodeList) Less(i, j int) bool {
-	return slice[i] < slice[j]
+	return slice[i].value.T.Before(slice[j].value.T)
 }
 func (slice nodeList) Swap(i, j int) {
 	slice[i], slice[j] = slice[j], slice[i]
-}
-
-type edge struct {
-	start  int
-	end    int
-	weight int
 }
 
 func (E *edge) String() string {
