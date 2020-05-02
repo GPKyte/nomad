@@ -23,6 +23,59 @@ const (
 	pathToTripCacheDir  = "cache/trips/"
 )
 
+type apiResponse struct {
+	Trips []*trip `json:"trips"`
+}
+
+type trip struct {
+	City       string `json:"city"`
+	Cost       int    `json:"cost"`
+	HiddenCity bool   `json:"hiddenCity"`
+}
+
+type logger struct{}
+
+
+// Determine the impact of Booking ahead of Departure date by N days
+// Find patterns of "best" for N
+// This only collects data and tags it for this purpose
+func checkWhenTheEarlyBirdRises() {
+	/* Define a handful of static locations to use as reference points */
+	/* It is important to also record airline information when present */
+	/* Look as soon as next day and up to 6mo */
+	/* This means # Requests = X routes * (30*6 dates) */
+	/* That's about 500 Requests, this should happen infrequently, like each month */
+	from := nomad.getLocationsByCode("CLE", "CVG", "PIT")
+	to := nomad.getLocationsByCode("DEN", "PIE", "LAX")
+	response := make(chan []byte)
+
+	for w := range from {
+		/* As we learn more, be more selective with dates checked */
+		for _, date := range getDatesForNextN(60 /* days */) {
+			url := formatURL(from[w], to[w], date)
+			response <- fakeVisit(url)
+
+			waitVariableTime()
+		}
+	}
+
+	/* Collect and interpret results as they arrive */
+	processFareData := func() {
+		var data apiResponse = <-response
+		print(data)
+	}
+
+}
+
+/* Idea is to look for deals out of popular pit stops then later find deals to those pitstops and beyond
+ * checkOutBoundFromMajorAirports will check fare from selected airports for the next N=5 days from date provided */
+ func checkOutboundFromMajorAirports(fromThisDay time.Time) {
+	for _, airport := range getYourMostFrequentLayoverAirports() {
+		for _, date := range getDatesBetween(fromThisDay, fromThisDay.AddDate(0, 0, 5 /*days*/)) {
+			visit(formatURL(airport, date))
+		}
+	}
+}
 func chooseDate() string     { /* want to use time.Time to format std dates like this */ return "2020-05-07" }
 func chooseLocation() string { return "CVG" }
 func concatURLArgs(kv map[string]string) string {
@@ -61,19 +114,6 @@ func formatURL(from, to nomad.Location, prettyDate string) string {
 	return fmt.Sprintf("http://skiplagged.com/api/%s?%s", endpoint, concatURLArgs(urlargs))
 }
 
-/* Helps to return top N airports which will be a focus of focused outbound trips */
-func getYourMostFrequentLayoverAirports() []string {
-	top := make([]string, 0, 10)
-	/* Once statistical methods are prevalent as utils, revisit this method */
-	cache := loadCacheOfAirports()
-
-	for i := range top {
-		top[i] = cache[rand.Intn(len(cache))]
-	}
-
-	return top
-}
-
 /* There are roughly 80-120 Airports depending on scope of site */
 func loadCacheOfAirports() (airports []string) {
 	type airport struct {
@@ -108,77 +148,23 @@ func updateCacheOfAirports(withNewJSON []byte) error {
 	return err
 }
 
-/* Idea is to look for deals out of popular pit stops then later find deals to those pitstops and beyond
- * checkOutBoundFromMajorAirports will check fare from selected airports for the next N=5 days from date provided */
-func checkOutboundFromMajorAirports(fromThisDay time.Time) {
-	for _, airport := range getYourMostFrequentLayoverAirports() {
-		for _, date := range getDatesBetween(fromThisDay, fromThisDay.AddDate(0, 0, 5 /*days*/)) {
-			visit(formatURL(airport, date))
-		}
-	}
-}
-
-// Determine the impact of Booking ahead of Departure date by N days
-// Find patterns of "best" for N
-// This only collects data and tags it for this purpose
-func askWhenTheEarlyBirdRises() {
-	/* Define a handful of static locations to use as reference points */
-	/* It is important to also record airline information when present */
-	/* Look as soon as next day and up to 6mo */
-	/* This means # Requests = X routes * (30*6 dates) */
-	/* That's about 500 Requests, this should happen infrequently, like each month */
-	from := []string{"CLE", "CVG", "PIT"}
-	to := []string{"DEN", "PIE", "LAX"}
-	response := make(chan []byte)
-
-	for w := range from {
-		/* As we learn more, be more selective with dates checked */
-		for _, date := range getDatesForNextN(60 /* days */) {
-			url := buildURLRequest(from[w], to[w], date)
-			response <- fakeVisit(url)
-
-			waitVariableTime()
-		}
-	}
-
-	/* Collect and interpret results as they arrive */
-	processFareData := func() {
-		data <- response
-		print(response)
-	}
-
-}
-
-type logger struct{}
-
 func (L *logger) Write(p []byte) (n int, err error) {
 	fmt.Print(string(p))
 	return len(p), nil
 }
 
-func visit(url string) {
-	/* TODO
-	 * Cache either parsed or original data using a timestamp filename
-	 * URL holds some meta data we might want to use, but avoid this
-	 * In every case we want what?
-	 * To receive Listings as they become available?
-	 * To download the requested page to memory&disk?
-	 * To return Trips?
-	 * ...
-	 */
-	log.Println("Visiting: ", url)
-	resp, err := http.Get(url)
 
-	if err != nil {
-		panic(string(err.Error()))
+/* Helps to return top N airports which will be a focus of focused outbound trips */
+func getYourMostFrequentLayoverAirports() []string {
+	top := make([]string, 0, 10)
+	/* Once statistical methods are prevalent as utils, revisit this method */
+	cache := loadCacheOfAirports()
+
+	for i := range top {
+		top[i] = cache[rand.Intn(len(cache))]
 	}
 
-	b, err := ioutil.ReadAll(resp.Body)
-	defer resp.Body.Close()
-
-	var responseAsJSON apiResponse
-	json.Unmarshal(b, &responseAsJSON)
-
+	return top
 }
 
 func getDatesForNextN(days int) []string {
@@ -205,22 +191,36 @@ func getDatesBetween(then, andNow time.Time) []string {
 	return datesThat
 }
 
-type apiResponse struct {
-	Trips []*trip `json:"trips"`
+func fakeVisit(url string) {
+	return fmt.Sprintf(url)
 }
+func visit(url string) {
+	/* TODO
+	 * Cache either parsed or original data using a timestamp filename
+	 * URL holds some meta data we might want to use, but avoid this
+	 * In every case we want what?
+	 * To receive Listings as they become available?
+	 * To download the requested page to memory&disk?
+	 * To return Trips?
+	 * ...
+	 */
+	log.Println("Visiting: ", url)
+	resp, err := http.Get(url)
 
-type trip struct {
-	City       string `json:"city"`
-	Cost       int    `json:"cost"`
-	HiddenCity bool   `json:"hiddenCity"`
+	if err != nil {
+		panic(string(err.Error()))
+	}
+
+	b, err := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+
+	var responseAsJSON apiResponse
+	json.Unmarshal(b, &responseAsJSON)
+
 }
 
 func waitVariableTime() {
 	const minimumWait = 10 /*seconds*/
-	seconds = minimum + rand.Intn(200) * time.Second
+	seconds = minimum + rand.Intn(200)*time.Second
 	time.Sleep(seconds)
-}
-
-func fakeVisit(url string) {
-	return fmt.Sprintf(url)
 }
