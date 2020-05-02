@@ -167,6 +167,10 @@ func importJSONAsListings(data []byte) []Listing {
 
 	/* Just assuming magic here for the time being */
 	err := json.Unmarshal(data, &L)
+	if err != nil {
+		panic(err.Error())
+	}
+
 	return L
 }
 
@@ -236,6 +240,6 @@ func max(collection []interface{ Value() int }) int {
 }
 
 // Before is a wrapper around time package's Before method. Useful for sorting/comparison
-func (tp *TimeAndPlace) Before(otherTime TimeAndPlace) bool {
-	return tp.T.Before(otherTime.T)
+func (T *TimeAndPlace) Before(otherTime TimeAndPlace) bool {
+	return T.T.Before(otherTime.T)
 }

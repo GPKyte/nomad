@@ -47,7 +47,6 @@ func pairs(sizeOfCollection int) (A []int, B []int) {
 		return nil, nil
 	}
 	var anySmallNumberOfPairs = 12
-	var maxPairs = sizeOfCollection * (sizeOfCollection - 1) // Order matters (1,3) and (3,1) are distinct
 
 	// get some n pairs
 	for count := 0; count < anySmallNumberOfPairs; {
