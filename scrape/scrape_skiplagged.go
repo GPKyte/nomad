@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/wander_bot/common"
+	"github.com/GPKyte/nomad"
 )
 
 // DateFormat for URL param with skiplagged
@@ -36,14 +36,29 @@ func concatURLArgs(kv map[string]string) string {
 	return strings.Join(cat, "&")
 }
 
-func formatURL(from, depart string) string {
+func formatURL(from, to nomad.Location, prettyDate string) string {
+	// Example: https://skiplagged.com/api/search.php?from=CLE&to=SVQ&depart=2020-05-16&return=&poll=true&format=v3&_=1588452120703
+	currentTime := string(time.Now().Unix() * time.Millisecond)
+	if len("1588452120703") != len(currentTime) {
+		panic("Wrong time format! Should be in milliseconds (Unix)")
+	}
+
 	urlargs := map[string]string{
-		"from":   from,
-		"depart": depart,
+		"from":   from.Code,
+		"depart": prettyDate,
 		"return": "", /* No Roundtrip searches */
 		"format": "v2",
+		"_": currentTime
 	}
-	return fmt.Sprintf("http://skiplagged.com/api/skipsy.php?%s", concatURLArgs(urlargs))
+	var endpoint string
+
+	if len(to) > 0 {
+		urlargs["to"] = to.Code
+		endpoint = "search.php"
+	} else {
+		endpoint = "skipsy.php"
+	}
+	return fmt.Sprintf("http://skiplagged.com/api/%s?%s", endpoint, concatURLArgs(urlargs))
 }
 
 /* Helps to return top N airports which will be a focus of focused outbound trips */
@@ -101,19 +116,6 @@ func checkOutboundFromMajorAirports(fromThisDay time.Time) {
 			visit(formatURL(airport, date))
 		}
 	}
-}
-
-func buildURLRequest(from, to common.Location, yyyy-mm-dd string) {
-	request := map[string]string{
-		"from":   from.Code,
-		"to":     to.Code,
-		"depart": yyyy-mm-dd,
-		"return": "", /* No Roundtrip searches */
-		"format": "v2",
-	}
-
-	url := formatURLArgs(request)
-	return url
 }
 
 // Determine the impact of Booking ahead of Departure date by N days
