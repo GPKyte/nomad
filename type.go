@@ -1,4 +1,4 @@
-package common
+package nomad
 
 import (
 	"encoding/json"
