@@ -10,8 +10,6 @@ import (
 	"os"
 	"strings"
 	"time"
-
-	"github.com/GPKyte/nomad"
 )
 
 // DateFormat for URL param with skiplagged
@@ -35,7 +33,6 @@ type trip struct {
 
 type logger struct{}
 
-
 // Determine the impact of Booking ahead of Departure date by N days
 // Find patterns of "best" for N
 // This only collects data and tags it for this purpose
@@ -45,9 +42,9 @@ func checkWhenTheEarlyBirdRises() {
 	/* Look as soon as next day and up to 6mo */
 	/* This means # Requests = X routes * (30*6 dates) */
 	/* That's about 500 Requests, this should happen infrequently, like each month */
-	from := nomad.getLocationsByCode("CLE", "CVG", "PIT")
-	to := nomad.getLocationsByCode("DEN", "PIE", "LAX")
-	response := make(chan []byte)
+	from := getLocationsByCode("CLE", "CVG", "PIT")
+	to := getLocationsByCode("DEN", "PIE", "LAX")
+	response := make(chan string)
 
 	for w := range from {
 		/* As we learn more, be more selective with dates checked */
@@ -61,18 +58,18 @@ func checkWhenTheEarlyBirdRises() {
 
 	/* Collect and interpret results as they arrive */
 	processFareData := func() {
-		var data apiResponse = <-response
-		print(data)
+		var data string = <-response
+		fmt.Printf(data)
 	}
 
 }
 
 /* Idea is to look for deals out of popular pit stops then later find deals to those pitstops and beyond
  * checkOutBoundFromMajorAirports will check fare from selected airports for the next N=5 days from date provided */
- func checkOutboundFromMajorAirports(fromThisDay time.Time) {
+func checkOutboundFromMajorAirports(fromThisDay time.Time) {
 	for _, airport := range getYourMostFrequentLayoverAirports() {
 		for _, date := range getDatesBetween(fromThisDay, fromThisDay.AddDate(0, 0, 5 /*days*/)) {
-			visit(formatURL(airport, date))
+			visit(formatURL(airport, Location{}, date))
 		}
 	}
 }
@@ -89,9 +86,9 @@ func concatURLArgs(kv map[string]string) string {
 	return strings.Join(cat, "&")
 }
 
-func formatURL(from, to nomad.Location, prettyDate string) string {
+func formatURL(from, to Location, prettyDate string) string {
 	// Example: https://skiplagged.com/api/search.php?from=CLE&to=SVQ&depart=2020-05-16&return=&poll=true&format=v3&_=1588452120703
-	currentTime := string(time.Now().Unix() * time.Millisecond)
+	currentTime := string(time.Now().Unix())
 	if len("1588452120703") != len(currentTime) {
 		panic("Wrong time format! Should be in milliseconds (Unix)")
 	}
@@ -101,11 +98,11 @@ func formatURL(from, to nomad.Location, prettyDate string) string {
 		"depart": prettyDate,
 		"return": "", /* No Roundtrip searches */
 		"format": "v2",
-		"_": currentTime
+		"_":      currentTime,
 	}
 	var endpoint string
 
-	if len(to) > 0 {
+	if to.Code != "" {
 		urlargs["to"] = to.Code
 		endpoint = "search.php"
 	} else {
@@ -115,11 +112,8 @@ func formatURL(from, to nomad.Location, prettyDate string) string {
 }
 
 /* There are roughly 80-120 Airports depending on scope of site */
-func loadCacheOfAirports() (airports []string) {
-	type airport struct {
-		Code string `json:"code"`
-	}
-	var loaderStruct = make([]*airport, 0, 200)
+func loadCacheOfAirports() (airports []Location) {
+	var loaderStruct = make([]Location, 0, 200)
 
 	raw, err := ioutil.ReadFile(pathToLocationCache)
 	if err != nil {
@@ -133,7 +127,7 @@ func loadCacheOfAirports() (airports []string) {
 
 	/* Reduce data to just the airport code before sending back []string */
 	for _, loc := range loaderStruct {
-		airports = append(airports, string(loc.Code))
+		airports = append(airports, loc)
 	}
 
 	return airports
@@ -153,10 +147,9 @@ func (L *logger) Write(p []byte) (n int, err error) {
 	return len(p), nil
 }
 
-
 /* Helps to return top N airports which will be a focus of focused outbound trips */
-func getYourMostFrequentLayoverAirports() []string {
-	top := make([]string, 0, 10)
+func getYourMostFrequentLayoverAirports() []Location {
+	top := make([]Location, 0, 10)
 	/* Once statistical methods are prevalent as utils, revisit this method */
 	cache := loadCacheOfAirports()
 
@@ -191,7 +184,7 @@ func getDatesBetween(then, andNow time.Time) []string {
 	return datesThat
 }
 
-func fakeVisit(url string) {
+func fakeVisit(url string) string {
 	return fmt.Sprintf(url)
 }
 func visit(url string) {
@@ -221,6 +214,6 @@ func visit(url string) {
 
 func waitVariableTime() {
 	const minimumWait = 10 /*seconds*/
-	seconds = minimum + rand.Intn(200)*time.Second
+	seconds := time.Duration(minimumWait+rand.Intn(200)) * time.Second
 	time.Sleep(seconds)
 }

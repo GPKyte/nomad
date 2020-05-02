@@ -44,9 +44,10 @@ func (T *TimeAndPlace) String() string {
 	return fmt.Sprintf("%s @%s", T.P, T.T)
 }
 
+// Location represents the popular and shorthand name for Airports (and other places?)
 type Location struct {
-	code string
-	name string
+	Code string
+	Name string
 }
 
 func newInvalidListing() Listing {
@@ -249,7 +250,7 @@ func getLocationsByCode(codes ...string) []Location {
 	// Eventually will have mechanism for looking up known locations against a DB which has meta data on them
 	for _, each := range codes {
 		// For now, just give the caller what they want
-		rez = append(rez, Location{name: "Unprovided", code: each})
+		rez = append(rez, Location{Name: "Unprovided", Code: each})
 	}
 
 	return rez

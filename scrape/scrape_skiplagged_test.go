@@ -42,27 +42,8 @@ func TestURLArgsHandling(t *testing.T) {
 	}
 }
 
-func max(a, b int) int {
-	if a >= b {
-		return a
-	}
-	return b
-}
-
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}
-
 func bad(e error) bool {
 	return e != nil
-}
-
-func head(n int, items ...interface{}) []interface{} {
-	head := min(n, len(items))
-	return items[:head]
 }
 
 func TestUnmarshalFromCache(t *testing.T) {
@@ -132,7 +113,7 @@ func TestDateGenerationForURLArgs(t *testing.T) {
 }
 
 func TestCheckWhenEarlyBirdRises(t *testing.T) {
-	checkWhenEarlyBirdRises()
+	checkWhenTheEarlyBirdRises()
 }
 
 func emptyStringSlice(this []string) bool {
@@ -142,11 +123,11 @@ func emptyStringSlice(this []string) bool {
 func TestLoadCacheOfAirports(t *testing.T) {
 	airports := loadCacheOfAirports()
 
-	if emptyStringSlice(airports) {
+	if len(airports) == 0 {
 		t.Fatal("Empty results from loading cache of airports")
 	}
 
-	if len(airports[0]) != len("CVG") {
+	if len(airports[0].Code) != len("CVG") {
 		t.Fatalf("Wrong format:\t%s\n\tXYZ three digit code preferred for Airports", airports[0])
 	}
 }

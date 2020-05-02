@@ -18,13 +18,8 @@ func TestRandomListingGen(t *testing.T) {
 	}
 }
 
-func chooseLocation() string {
-	var locs = []string{"A", "B", "C", "D", "E"}
-	return locs[rand.Intn(5)]
-}
-
-func getAirportLocations() []location {
-	var result = make([]location, 200)
+func getAirportLocations() []Location {
+	var result = make([]Location, 200)
 	var locationsRaw []struct {
 		name string
 		code string
@@ -40,12 +35,12 @@ func getAirportLocations() []location {
 	}
 
 	for _, L := range locationsRaw {
-		result = append(result, location{L.name, L.code})
+		result = append(result, Location{L.name, L.code})
 	}
 	return result
 }
 
-func pick(howMany int, ofThese []location) []location {
+func pick(howMany int, ofThese []Location) []Location {
 	var seed = 5090716181  // Any number, skip seeding override when determinism wanted
 	rand.Seed(int64(seed)) // Override while considering a rand.Int() soln or when determinism wanted
 
@@ -54,7 +49,7 @@ func pick(howMany int, ofThese []location) []location {
 	}
 
 	// Build up a map to select unique elements and ignore repeats
-	var uniquePicks = make(map[location]int, howMany)
+	var uniquePicks = make(map[Location]int, howMany)
 	for len(uniquePicks) < howMany {
 		p := rand.Int() % len(ofThese)
 		thisPick := ofThese[p]
@@ -62,7 +57,7 @@ func pick(howMany int, ofThese []location) []location {
 	}
 
 	// Retrieve keys into a simple slice and return address of it
-	var chosen = make([]location, howMany)
+	var chosen = make([]Location, howMany)
 	for k := range uniquePicks {
 		chosen = append(chosen, k)
 	}
