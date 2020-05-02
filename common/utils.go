@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"os"
 	"regexp"
+	"sort"
 	"strings"
 )
 
@@ -74,33 +75,31 @@ func pairs(sizeOfCollection int) (A []int, B []int) {
 	return A, B
 }
 
+type timeAndPlaceList []TimeAndPlace
+
+func (slice timeAndPlaceList) Len() int {
+	return len(slice)
+}
+func (slice timeAndPlaceList) Less(i, j int) bool {
+	return slice[i].T.Before(slice[j].T)
+}
+func (slice timeAndPlaceList) Swap(i, j int) {
+	slice[i], slice[j] = slice[j], slice[i]
+}
+
 /* Do we concern with the potential overhead of passing by value structs? */
 /* Because we know not enough and the compiler is very good, let's say no for now */
-func (slice *[]TimeAndPlace) sort(leastToGreatest bool) []TimeAndPlace {
-	/* Insertion sort for elements which may already be closely in order */
-	var endSorted = 0
+func (slice timeAndPlaceList) sort(leastToGreatest bool) []TimeAndPlace {
 	var total = len(slice)
-	var S = make([]TimeAndPlace, 0, total)
+	var S = make(timeAndPlaceList, 0, total)
 
-	/* Get next element */
-	var unsorted = make(chan []TimeAndPlace)
-	for i := range slice {
-		unsorted <- slice[i : i+1]
+	/* Copy slice, intent to refactor this util or delete entirely so come back later */
+	for w := range slice {
+		S[w] = slice[w]
 	}
 
-	/* Insert into sorted array logic */
-	for len(sorted) < total {
-		next <- unsorted
-
-		endSorted++
-		for insertHere := 0; insertHere < endSorted; insertHere++ {
-			if next.Before(slice[insertHere]) {
-				S = append(S[:insertHere], append(next, S[insertHere:]))
-			}
-		}
-	}
-
-	return
+	sort.Sort(S)
+	return S
 }
 
 func writeFile(filepath string, data []byte) error {
