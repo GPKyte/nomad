@@ -4,8 +4,11 @@ import (
 	"fmt"
 )
 
+// placeholder is a placeholder for the time being
+type placeholder interface{}
+
 type node struct {
-	value TimeAndPlace
+	value placeholder
 	label int
 }
 type nodeList []node
@@ -33,25 +36,25 @@ type edge struct {
 type graph struct {
 	nodes    []node
 	edges    map[int][]edge
-	shortcut map[TimeAndPlace]node
+	shortcut map[placeholder]node
 }
 
-func (G *graph) getNode(fromReferenceToThis TimeAndPlace) (node, error) {
+func (G *graph) getNode(fromReferenceToThis placeholder) (node, error) {
 	if G.has(fromReferenceToThis) {
 		return G.shortcut[fromReferenceToThis], nil
 	}
 	return node{}, fmt.Errorf("Could not find Node: %s", fromReferenceToThis)
 }
 
-func (G *graph) get(fromThisValue TimeAndPlace) (label int) {
+func (G *graph) get(fromThisValue placeholder) (label int) {
 	return G.shortcut[fromThisValue].label
 }
 
-func newGraphFrom(rawNodes []TimeAndPlace, rawEdges []Trip) *graph {
+func newGraphFrom(rawNodes []placeholder, rawEdges []Trip) *graph {
 	G := new(graph)
 	G.nodes = make([]node, len(rawNodes))
 	G.edges = make(map[int][]edge)
-	G.shortcut = make(map[TimeAndPlace]node)
+	G.shortcut = make(map[placeholder]node)
 
 	for i, ne := range rawNodes {
 		G.addNode(node{ne, i})
@@ -105,8 +108,8 @@ func (G *graph) hasEdge(start, end int) bool {
 
 func (G *graph) has(some interface{}) bool {
 	switch some.(type) {
-	case TimeAndPlace:
-		return G.shortcut[some.(TimeAndPlace)].label >= 0
+	case placeholder:
+		return G.shortcut[some.(placeholder)].label >= 0
 	case node:
 		return G.nodes[some.(node).label].label >= 0
 	case edge:
@@ -183,16 +186,6 @@ func (G *graph) String() string {
 
 func (N *node) String() string {
 	return fmt.Sprint(N.label)
-}
-
-func (slice nodeList) Len() int {
-	return len(slice)
-}
-func (slice nodeList) Less(i, j int) bool {
-	return slice[i].value.T.Before(slice[j].value.T)
-}
-func (slice nodeList) Swap(i, j int) {
-	slice[i], slice[j] = slice[j], slice[i]
 }
 
 func (E *edge) String() string {
