@@ -225,6 +225,15 @@ func loadCacheOfAirports() (airports []Location) {
 	return airports
 }
 
+func newSkipLaggedListing(departLoc string, departTime time.Time, arriveLoc string, arriveTime time.Time, cost int64) Listing {
+	return Listing{
+		Depart: timeSpace{Location: departLoc, DateTime: departTime},
+		Arrive: timeSpace{Location: arriveLoc, DateTime: arriveTime},
+		Scrape: makeScrapeStamp("SkipLagged.com"),
+		Price:  money(cost),
+	}
+}
+
 /* Overwrite (should be infrequent) the known cache of airport locations
  * Format is NOT Validated, be careful to follow conventions or be surprised
  * Intended for use with the data from skiplagged API in the future */
