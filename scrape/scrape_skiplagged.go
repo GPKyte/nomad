@@ -135,24 +135,22 @@ func checkWhenTheEarlyBirdRises() {
 	/* That's about 500 Requests, this should happen infrequently, like each month */
 	from := getLocationsByCode("CLE", "CVG", "PIT")
 	to := getLocationsByCode("DEN", "PIE", "LAX")
-	response := make(chan string)
 
-	for w := range from {
-		/* As we learn more, be more selective with dates checked */
-		for _, date := range getDatesForNextN(60 /* days */) {
+	for w := range to {
+		/* TODO: As we learn more, be more selective with dates checked */
+		for _, date := range getDatesForNext(5 /*days*/) {
+
+			if from[w] == to[w] || len(from[w].Code) == 0 || len(to[w].Code) == 0 {
+				panic("Locations are bad again! Check tests for early bird")
+			}
+
 			url := formatURL(from[w], to[w], date)
-			response <- fakeVisit(url)
+			responseBody := visit(url)
+			parseFromAPIv3Search(responseBody)
 
-			waitVariableTime()
+			waitVariableTime() /* Spam servers => get blacklisted, so do NOT Spam */
 		}
 	}
-
-	/* Collect and interpret results as they arrive */
-	processFareData := func() {
-		var data string = <-response
-		fmt.Printf(data)
-	}
-
 }
 
 /* Idea is to look for deals out of popular pit stops then later find deals to those pitstops and beyond
@@ -253,10 +251,10 @@ func getYourMostFrequentLayoverAirports() []Location {
 	return top
 }
 
-func getDatesForNextN(days int) []string {
+func getDatesForNext(nDays int) []string {
 	now := time.Now()
 	var years, monthsAnd, daysAhead int
-	daysAhead = days
+	daysAhead = nDays
 	andThen := now.AddDate(years, monthsAnd, daysAhead)
 
 	return getDatesBetween(now, andThen)
@@ -280,28 +278,27 @@ func getDatesBetween(then, andNow time.Time) []string {
 func fakeVisit(url string) string {
 	return fmt.Sprintf(url)
 }
-func visit(url string) {
-	/* TODO
-	 * Cache either parsed or original data using a timestamp filename
-	 * URL holds some meta data we might want to use, but avoid this
-	 * In every case we want what?
-	 * To receive Listings as they become available?
-	 * To download the requested page to memory&disk?
-	 * To return Trips?
-	 * ...
-	 */
-	log.Println("Visiting: ", url)
-	resp, err := http.Get(url)
+func visit(url string) []byte {
+	var resp *http.Response
+	var body []byte
+	var err error
 
-	if err != nil {
-		panic(string(err.Error()))
+	fmt.Println("Visiting: ", url)
+
+	if resp, err = http.Get(url); err != nil {
+		panic(err.Error())
 	}
 
-	b, err := ioutil.ReadAll(resp.Body)
+	if body, err = ioutil.ReadAll(resp.Body); err != nil {
+		panic(err.Error())
+	}
+	/* TODO: Cache response for future usage? */
 	defer resp.Body.Close()
 
-	var responseAsJSON apiResponse
-	json.Unmarshal(b, &responseAsJSON)
+	if len(body) == 0 {
+		panic("No Response received from visiting " + url)
+	}
+	return body
 }
 
 func waitVariableTime() {
