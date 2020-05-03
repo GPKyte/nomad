@@ -71,27 +71,32 @@ func parseFromAPIv3Search(results []byte) {
 
 	for _, fare := range hmm.Plans["outbound"] {
 
-		var budget = 100 /*cents*/ * 2000 /*USDollars ($)*/
+		var budget int64 = 100 /*cents*/ * 2000 /*USDollars ($)*/
 		if fare.OneWayCost > budget {
 			continue // skip this price, but be warned that this generates incomplete data
 		}
-		var id string = fare.Flight /* Site-generated ID for flight Itinerary makes convenient lookup across nested structures */
+		var id string = fare.Flight      /* Site-generated ID for flight Itinerary makes convenient lookup across nested structures */
 		var cost int64 = fare.OneWayCost /* Round Trip Costs are not being considered at this time */
 		var flight nestedFlight = hmm.Flights[id]
+		var format string = FullDateTimeFormat
+
 		var departTime, arriveTime time.Time
 		var departLoc, arriveLoc string /* TODO: Enforce Location-type name lookup by code and fill-in data */
+		var err error
 
 		/* TODO: Add legs to a single Listing, instead of making individual Listings */
 		for _, leg := range flight.Segments {
-			departTime, err := time.Parse(format, leg.Departure.Time)
-			departLoc := leg.Departure.Airport
-
-			arriveTime, err := time.Parse(format, leg.Arrival.Time)
-			arriveLoc := leg.Arrival.Airport
-
+			departTime, err = time.Parse(format, leg.Departure.Time)
+			departLoc = leg.Departure.Airport
 			if err != nil {
 				panic(err.Error())
 			}
+			arriveTime, err = time.Parse(format, leg.Arrival.Time)
+			arriveLoc = leg.Arrival.Airport
+			if err != nil {
+				panic(err.Error())
+			}
+
 			/* TODO: Make real Listing and send it back on a channel */
 			fmt.Printf("\nThis is a Listing:\n%s:%s -> %s:%s\nPrice:%v\n", departLoc, departTime, arriveLoc, arriveTime, cost)
 		}
