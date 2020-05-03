@@ -16,7 +16,7 @@ import (
 // DateFormat for URL param with skiplagged
 const (
 	DateFormat = "2006-01-02"
-	UnixMilli  = "05000"
+	FullDateTimeFormat := "2006-01-02T15:04:05-07:00"
 )
 const (
 	/* Dir must end in trailing slash and files must be typed */
@@ -26,6 +26,75 @@ const (
 
 type apiResponse struct {
 	Trips []*trip `json:"trips"`
+}
+
+type skippyResponse apiResponse
+
+/* In order to parse version 3 api/search? response
+ * we define several nested types for convenient Unmarshalling */
+type topNest struct {
+	Flights map[string]nestedFlight `json:"flights"`
+	Plans   map[string][]nestedFare `json:"itineraries"`
+}
+type nestedFlight struct {
+	Segments []nestedSegment `json:"segments"`
+	Duration int64           `json:"duration"`
+	Count    int             `json:"count"`
+}
+type nestedSegment struct {
+	Airline      string          `json:"airline"`
+	FlightNumber int             `json:"flight_number"`
+	Departure    nestedTimeSpace `json:"departure"`
+	Arrival      nestedTimeSpace `json:"arrival"`
+	Duration     int             `json:"duration"`
+}
+type nestedTimeSpace struct {
+	Time    string `json:"time"`
+	Airport string `json:"airport"`
+}
+type nestedPlan struct {
+	Outbound []nestedFare `json:"outbound"`
+	Inbound  []nestedFare `json:"inbound"`
+}
+type nestedFare struct {
+	Flight        string `json:"flight"`
+	OneWayCost    int64  `json:"one_way_price"`
+	RoundTripCost int64  `json:"min_round_trip_price"`
+}
+
+func parseFromAPIv3Search(results []byte) {
+	hmm := new(topNest)
+	if err := json.Unmarshal(results, hmm); err != nil {
+		panic(err.Error())
+	}
+
+	for _, fare := range hmm.Plans["outbound"] {
+
+		var budget = 100 /*cents*/ * 2000 /*USDollars ($)*/
+		if fare.OneWayCost > budget {
+			continue // skip this price, but be warned that this generates incomplete data
+		}
+		var id string = fare.Flight /* Site-generated ID for flight Itinerary makes convenient lookup across nested structures */
+		var cost int64 = fare.OneWayCost /* Round Trip Costs are not being considered at this time */
+		var flight nestedFlight = hmm.Flights[id]
+		var departTime, arriveTime time.Time
+		var departLoc, arriveLoc string /* TODO: Enforce Location-type name lookup by code and fill-in data */
+
+		/* TODO: Add legs to a single Listing, instead of making individual Listings */
+		for _, leg := range flight.Segments {
+			departTime, err := time.Parse(format, leg.Departure.Time)
+			departLoc := leg.Departure.Airport
+
+			arriveTime, err := time.Parse(format, leg.Arrival.Time)
+			arriveLoc := leg.Arrival.Airport
+
+			if err != nil {
+				panic(err.Error())
+			}
+			/* TODO: Make real Listing and send it back on a channel */
+			fmt.Printf("\nThis is a Listing:\n%s:%s -> %s:%s\nPrice:%v\n", departLoc, departTime, arriveLoc, arriveTime, cost)
+		}
+	}
 }
 
 type trip struct {
