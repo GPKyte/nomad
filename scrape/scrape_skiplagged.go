@@ -111,6 +111,19 @@ type trip struct {
 
 type logger struct{}
 
+/* TODO: Later, would rather get DB working properly first */
+func cache(path string, data *apiResponse) {
+	return /* No Op */
+}
+
+func cacheRaw(response []byte, name string) error {
+	var mode = os.FileMode(int(0444))
+	var fullpath = fmt.Sprintf("%s%s", pathToRawCache, name)
+
+	err := ioutil.WriteFile(fullpath, response, mode)
+	return err
+}
+
 // Determine the impact of Booking ahead of Departure date by N days
 // Find patterns of "best" for N
 // This only collects data and tags it for this purpose
