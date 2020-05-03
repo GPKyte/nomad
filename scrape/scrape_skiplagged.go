@@ -15,12 +15,13 @@ import (
 
 // DateFormat for URL param with skiplagged
 const (
-	DateFormat = "2006-01-02"
-	FullDateTimeFormat := "2006-01-02T15:04:05-07:00"
+	DateFormat         = "2006-01-02"
+	FullDateTimeFormat = "2006-01-02T15:04:05-07:00"
 )
 const (
 	/* Dir must end in trailing slash and files must be typed */
 	pathToLocationCache = "cache/locations.json"
+	pathToRawCache      = "cache/raw/"
 	pathToTripCacheDir  = "cache/trips/"
 )
 
@@ -158,6 +159,7 @@ func concatURLArgs(kv map[string]string) string {
 	return strings.Join(cat, "&")
 }
 
+/* TODO: Deprecate because this function may be growing without bound and is basic enough to duplicate code */
 func formatURL(from, to Location, prettyDate string) string {
 	// Example: https://skiplagged.com/api/search.php?from=CLE&to=SVQ&depart=2020-05-16&return=&poll=true&format=v3&_=1588452120703
 	currentTime := strconv.FormatInt(time.Now().Unix()*1000, 10)
@@ -210,7 +212,7 @@ func loadCacheOfAirports() (airports []Location) {
  * Format is NOT Validated, be careful to follow conventions or be surprised
  * Intended for use with the data from skiplagged API in the future */
 func updateCacheOfAirports(withNewJSON []byte) error {
-	var mode = os.FileMode(int(0777))
+	var mode = os.FileMode(int(0444))
 	err := ioutil.WriteFile(pathToLocationCache, withNewJSON, mode)
 	return err
 }
