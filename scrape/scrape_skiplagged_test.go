@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"math/rand"
+	"os"
 	"strings"
 	"testing"
 	"time"
@@ -70,6 +71,24 @@ func TestUnmarshalFromCache(t *testing.T) {
 	}
 }
 
+func TestUnmarshalFromAPIv3Search(t *testing.T) {
+	url := formatURL(Location{Code: "CLE"}, Location{Code: "LAX"}, "2020-09-01")
+	responseBody := visit(url)
+	srcListings := parseFromAPIv3Search(responseBody)
+
+	var collection []string
+
+	for L := range srcListings {
+		collection = append(collection, L.String())
+	}
+	if err := ioutil.WriteFile(".log", []byte(strings.Join(collection, "\n")), os.FileMode(0644)); err != nil {
+		panic(err.Error())
+	}
+	if Verbose {
+		fmt.Println(collection)
+	}
+}
+
 /* Testing for these traits
 * That Dates generated match the expected #, and start/end
 * Format must be accurate, if wrong, inspect struct */
@@ -110,10 +129,6 @@ func TestDateGenerationForURLArgs(t *testing.T) {
 			t.Fatal("Not enough days generated from getDatesForNext(N(days)")
 		}
 	}
-}
-
-func TestCheckWhenEarlyBirdRises(t *testing.T) {
-	checkWhenTheEarlyBirdRises()
 }
 
 func emptyStringSlice(this []string) bool {
