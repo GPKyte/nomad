@@ -106,7 +106,7 @@ func TestDateGenerationForURLArgs(t *testing.T) {
 		days := rand.Intn(400)
 
 		/* Starting from Tomorrow or Today, TODO: decide later when it gets used more often */
-		if list := getDatesForNextN(days); len(list) != days {
+		if list := getDatesForNext(days); len(list) != days {
 			t.Fatal("Not enough days generated from getDatesForNext(N(days)")
 		}
 	}
