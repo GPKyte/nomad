@@ -188,16 +188,17 @@ func formatURL(from, to Location, prettyDate string) string {
 		"from":   from.Code,
 		"depart": prettyDate,
 		"return": "", /* No Roundtrip searches */
-		"format": "v2",
 		"_":      currentTime,
 	}
 	var endpoint string
 
 	if to.Code != "" {
 		urlargs["to"] = to.Code
+		urlargs["format"] = "v3"
 		endpoint = "search.php"
 	} else {
 		endpoint = "skipsy.php"
+		urlargs["format"] = "v2"
 	}
 	return fmt.Sprintf("http://skiplagged.com/api/%s?%s", endpoint, concatURLArgs(urlargs))
 }
