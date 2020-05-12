@@ -25,12 +25,6 @@ const (
 	pathToTripCacheDir  = "cache/trips/"
 )
 
-type apiResponse struct {
-	Trips []*trip `json:"trips"`
-}
-
-type skippyResponse apiResponse
-
 /* In order to parse version 3 api/search? response
  * we define several nested types for convenient Unmarshalling */
 type topNest struct {
@@ -113,13 +107,6 @@ type trip struct {
 	City       string `json:"city"`
 	Cost       int    `json:"cost"`
 	HiddenCity bool   `json:"hiddenCity"`
-}
-
-type logger struct{}
-
-/* TODO: Later, would rather get DB working properly first */
-func cache(path string, data *apiResponse) {
-	return /* No Op */
 }
 
 func cacheRaw(response []byte, name string) error {
@@ -249,11 +236,6 @@ func updateCacheOfAirports(withNewJSON []byte) error {
 	return err
 }
 
-func (L *logger) Write(p []byte) (n int, err error) {
-	fmt.Print(string(p))
-	return len(p), nil
-}
-
 /* Helps to return top N airports which will be a focus of focused outbound trips */
 func getYourMostFrequentLayoverAirports() []Location {
 	top := make([]Location, 0, 10)
@@ -317,6 +299,8 @@ func visit(url string) []byte {
 	return body
 }
 
+// According to robots.txt in 2020.4.1 the request per second rate limited to 1 second between bot calls
+// We can respect that and we're in no rush so add more
 func waitVariableTime() {
 	const minimumWait = 2 /*seconds*/
 	seconds := time.Duration(minimumWait+rand.Intn(20)) * time.Second
