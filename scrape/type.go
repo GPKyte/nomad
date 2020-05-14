@@ -255,3 +255,13 @@ func getLocationsByCode(codes ...string) []Location {
 
 	return rez
 }
+
+// SanitizeLocations will insure that standard format is used for airport codes and return corresponsing Location structs
+func SanitizeLocations(to, from string) (Location, Location) {
+	if len(to) != 3 || len(from) != 3 {
+		panic("Expected standard location format")
+	}
+
+	rez := getLocationsByCode(to, from)
+	return rez[0], rez[1]
+}
