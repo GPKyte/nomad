@@ -25,6 +25,57 @@ const (
 	pathToTripCacheDir  = "cache/trips/"
 )
 
+// Scraper is the entry point to this program and stores the meta-data needed for externally-facing methods
+// Optionally Grow out meta data as needed
+type Scraper struct {
+	storage chan Listing
+	name    string
+}
+
+// NewSkippyScraper will provide a consistent destination across scrape jobs, supply the channel to send Listings through
+func NewSkippyScraper(storage chan Listing) *Scraper {
+	S := new(Scraper)
+	S.storage = storage
+	S.name = "Skiplagged.com v3"
+
+	return S
+}
+
+// AToBNearDate uses its own discretion to find airfare from A to B in the days after this date
+func (S *Scraper) AToBNearDate(A, B string, date time.Time) {
+	S.AToBDuring(A, B, date, date.AddDate(0, 0, 10 /*days ahead*/))
+}
+
+// AToBDuring searches every day in the given time frame
+func (S *Scraper) AToBDuring(A, B string, start, end time.Time) {
+	var dates []string = getDatesBetween(start, end)
+
+	for _, D := range dates {
+		S.searchAndScrape(A, B, D)
+	}
+}
+
+// searchAndScrape is the essence of each search and requires preformatting the parameters
+// "from" and "to" are three-letter airport codes
+// date follow the DateFormat constant defined in this file
+func (S *Scraper) searchAndScrape(A, B, date string) {
+	from, to := SanitizeLocations(A, B)
+
+	var url string = formatURL(from, to, date)
+	var responseBody []byte = visit(url)
+
+	S.scrape(responseBody)
+	waitVariableTime()
+}
+
+// AToAnywhereSoon may check standard and non-standard listings for deals and this needs to be accounted for if using the data
+// This is because Skiplagged.com offers two main APIs and this one will trigger a call to Skippy,
+// which aggregates data by mincost to any Location, instead of per Flight to one Location
+func (S *Scraper) AToAnywhereSoon(A string) {
+	// Need to specifically handle v2 Skippy API response here instead of reusing abstraction :(
+	S.AToBNearDate(A, "", time.Now())
+}
+
 /* In order to parse version 3 api/search? response
  * we define several nested types for convenient Unmarshalling */
 type topNest struct {
@@ -57,50 +108,44 @@ type nestedFare struct {
 	RoundTripCost int64  `json:"min_round_trip_price"`
 }
 
-func parseFromAPIv3Search(results []byte) chan Listing {
-	var scraped = make(chan Listing)
-	var hmm = new(topNest)
+func (S *Scraper) scrape(results []byte) {
+	var apiSearchV3Response = new(topNest)
 
-	if err := json.Unmarshal(results, hmm); err != nil {
-		panic(err.Error())
+	if err := json.Unmarshal(results, apiSearchV3Response); err != nil {
+		log.Panicln(err.Error())
 	}
+	for _, fare := range apiSearchV3Response.Plans["outbound"] {
 
-	go func() {
-		for _, fare := range hmm.Plans["outbound"] {
-
-			var budget int64 = 100 /*cents*/ * 2000 /*USDollars ($)*/
-			if fare.OneWayCost > budget {
-				continue // skip this price, but be warned that this generates incomplete data
-			}
-			var id string = fare.Flight      /* Site-generated ID for flight Itinerary makes convenient lookup across nested structures */
-			var cost int64 = fare.OneWayCost /* Round Trip Costs are not being considered at this time */
-			var flight nestedFlight = hmm.Flights[id]
-			var format string = FullDateTimeFormat
-
-			var departTime, arriveTime time.Time
-			var departLoc, arriveLoc string /* TODO: Enforce Location-type name lookup by code and fill-in data */
-			var err error
-
-			/* TODO: Add legs to a single Listing, instead of making individual Listings */
-			for _, leg := range flight.Segments {
-				departTime, err = time.Parse(format, leg.Departure.Time)
-				departLoc = leg.Departure.Airport
-				if err != nil {
-					panic(err.Error())
-				}
-				arriveTime, err = time.Parse(format, leg.Arrival.Time)
-				arriveLoc = leg.Arrival.Airport
-				if err != nil {
-					panic(err.Error())
-				}
-
-				scraped <- newSkipLaggedListing(departLoc, departTime, arriveLoc, arriveTime, cost)
-			}
+		var budget int64 = 100 /*cents*/ * 2000 /*USDollars ($)*/
+		if fare.OneWayCost > budget {
+			continue // skip this price, but be warned that this generates incomplete data
 		}
-		defer close(scraped)
-	}()
+		var id string = fare.Flight      /* Site-generated ID for flight Itinerary makes convenient lookup across nested structures */
+		var cost int64 = fare.OneWayCost /* Round Trip Costs are not being considered at this time */
+		var flight nestedFlight = apiSearchV3Response.Flights[id]
+		var format string = FullDateTimeFormat
 
-	return scraped
+		var departTime, arriveTime time.Time
+		var departLoc, arriveLoc string
+		var err error
+
+		/* TODO: Add legs to a single Listing, instead of making individual Listings */
+		for _, leg := range flight.Segments {
+			departTime, err = time.Parse(format, leg.Departure.Time)
+			departLoc = leg.Departure.Airport
+			if err != nil {
+				panic(err.Error())
+			}
+			arriveTime, err = time.Parse(format, leg.Arrival.Time)
+			arriveLoc = leg.Arrival.Airport
+			if err != nil {
+				panic(err.Error())
+			}
+
+			S.storage <- newSkipLaggedListing(departLoc, departTime, arriveLoc, arriveTime, cost)
+		}
+	}
+	recover()
 }
 
 type trip struct {
@@ -115,35 +160,6 @@ func cacheRaw(response []byte, name string) error {
 
 	err := ioutil.WriteFile(fullpath, response, mode)
 	return err
-}
-
-// Determine the impact of Booking ahead of Departure date by N days
-// Find patterns of "best" for N
-// This only collects data and tags it for this purpose
-func checkWhenTheEarlyBirdRises() {
-	/* Define a handful of static locations to use as reference points */
-	/* It is important to also record airline information when present */
-	/* Look as soon as next day and up to 6mo */
-	/* This means # Requests = X routes * (30*6 dates) */
-	/* That's about 500 Requests, this should happen infrequently, like each month */
-	from := getLocationsByCode("CLE", "CVG", "PIT")
-	to := getLocationsByCode("DEN", "PIE", "LAX")
-
-	for w := range to {
-		/* TODO: As we learn more, be more selective with dates checked */
-		for _, date := range getDatesForNext(5 /*days*/) {
-
-			if from[w] == to[w] || len(from[w].Code) == 0 || len(to[w].Code) == 0 {
-				panic("Locations are bad again! Check tests for early bird")
-			}
-
-			url := formatURL(from[w], to[w], date)
-			responseBody := visit(url)
-			parseFromAPIv3Search(responseBody)
-
-			waitVariableTime() /* Spam servers => get blacklisted, so do NOT Spam */
-		}
-	}
 }
 
 /* Idea is to look for deals out of popular pit stops then later find deals to those pitstops and beyond
