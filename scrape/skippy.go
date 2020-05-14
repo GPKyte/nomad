@@ -25,16 +25,16 @@ const (
 	pathToTripCacheDir  = "cache/trips/"
 )
 
-// Scraper is the entry point to this program and stores the meta-data needed for externally-facing methods
+// SkippyScraper is the entry point to this program and stores the meta-data needed for externally-facing methods
 // Optionally Grow out meta data as needed
-type Scraper struct {
+type SkippyScraper struct {
 	storage chan Listing
 	name    string
 }
 
-// NewSkippyScraper will provide a consistent destination across scrape jobs, supply the channel to send Listings through
-func NewSkippyScraper(storage chan Listing) *Scraper {
-	S := new(Scraper)
+// New will provide a consistent destination across scrape jobs, supply the channel to send Listings through
+func New(storage chan Listing) *SkippyScraper {
+	S := new(SkippyScraper)
 	S.storage = storage
 	S.name = "Skiplagged.com v3"
 
@@ -42,12 +42,12 @@ func NewSkippyScraper(storage chan Listing) *Scraper {
 }
 
 // AToBNearDate uses its own discretion to find airfare from A to B in the days after this date
-func (S *Scraper) AToBNearDate(A, B string, date time.Time) {
+func (S *SkippyScraper) AToBNearDate(A, B string, date time.Time) {
 	S.AToBDuring(A, B, date, date.AddDate(0, 0, 10 /*days ahead*/))
 }
 
 // AToBDuring searches every day in the given time frame
-func (S *Scraper) AToBDuring(A, B string, start, end time.Time) {
+func (S *SkippyScraper) AToBDuring(A, B string, start, end time.Time) {
 	var dates []string = getDatesBetween(start, end)
 
 	for _, D := range dates {
@@ -58,7 +58,7 @@ func (S *Scraper) AToBDuring(A, B string, start, end time.Time) {
 // searchAndScrape is the essence of each search and requires preformatting the parameters
 // "from" and "to" are three-letter airport codes
 // date follow the DateFormat constant defined in this file
-func (S *Scraper) searchAndScrape(A, B, date string) {
+func (S *SkippyScraper) searchAndScrape(A, B, date string) {
 	from, to := SanitizeLocations(A, B)
 
 	var url string = formatURL(from, to, date)
@@ -71,7 +71,7 @@ func (S *Scraper) searchAndScrape(A, B, date string) {
 // AToAnywhereSoon may check standard and non-standard listings for deals and this needs to be accounted for if using the data
 // This is because Skiplagged.com offers two main APIs and this one will trigger a call to Skippy,
 // which aggregates data by mincost to any Location, instead of per Flight to one Location
-func (S *Scraper) AToAnywhereSoon(A string) {
+func (S *SkippyScraper) AToAnywhereSoon(A string) {
 	// Need to specifically handle v2 Skippy API response here instead of reusing abstraction :(
 	S.AToBNearDate(A, "", time.Now())
 }
@@ -108,7 +108,7 @@ type nestedFare struct {
 	RoundTripCost int64  `json:"min_round_trip_price"`
 }
 
-func (S *Scraper) scrape(results []byte) {
+func (S *SkippyScraper) scrape(results []byte) {
 	var apiSearchV3Response = new(topNest)
 
 	if err := json.Unmarshal(results, apiSearchV3Response); err != nil {
