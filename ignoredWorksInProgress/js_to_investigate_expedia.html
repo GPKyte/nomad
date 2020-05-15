@@ -1,0 +1,100 @@
+<script type="text/javascript">
+    (function (Promise) {
+        var loadPolyfill, onError, onSuccess,
+            perceivedInstantOnRoundTripEnabled = false;
+
+        function addPerformanceMarker(marker) {
+            if (window.dctk && window.dctk.ewePerformance && (typeof window.dctk.ewePerformance.mark === 'function')) {
+                window.dctk.ewePerformance.mark(marker);
+            } else if (window.performance && window.performance.mark) {
+                window.performance.mark(marker);
+            }
+        }
+
+        onSuccess = function () {
+            function handleSearchResponse(request, resolve, reject) {
+                var responseText = request.response || request.responseText,
+                        parsedResponse,
+                        hasOffers,
+                        hasError;
+
+                if (request.status === 200) {
+                    try {
+                        parsedResponse = JSON.parse(responseText);
+                        hasError = parsedResponse.content && parsedResponse.content.errorData && parsedResponse.content.errorData.error;
+                    } catch(e) {
+                        hasError = true;
+                    }
+
+                    hasOffers = parsedResponse.content && parsedResponse.content.index && parsedResponse.content.index.length > 0;
+
+                    if (hasError) {
+                        reject(request);
+                    } else {
+                        resolve(parsedResponse);
+
+                        if (hasOffers) {
+                            window.pagingRequest.wasSuccessful = true;
+                        }
+                    }
+                } else {
+                    reject(request);
+                }
+            }
+
+            window.pagingRequest = new window.Promise(function(resolve, reject) {
+                var request = new XMLHttpRequest(),
+                        selectedLegIndex,
+                        fl = '',
+                        ul = '';
+
+                request.open('POST', '/flight/search/');
+                request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+                request.timeout = 90000;
+
+                if (perceivedInstantOnRoundTripEnabled) {
+                    window.pagingXMLHttpRequest = request;
+                }
+
+                request.onload = function () {
+                    if (request.status === 200) {
+                        addPerformanceMarker('requestLiveOffersSuccess');
+                    }
+                    handleSearchResponse(request, resolve, reject);
+                };
+                request.ontimeout = function() {
+                    handleSearchResponse(request, resolve, reject);
+                };
+                request.send('{"trips":[{"departureAirportCode":"MCI","arrivalAirportCode":"BCN","departureDate":"2020-03-04","returnDate":null}],"numberOfAdults":1,"childAges":[],"infantInLap":[false],"isRefundableFlight":false,"isNonStopFlight":false,"airlinePreference":"","cabinClass":"coach","pageSelectionParameters":{},"packageType":"f","routeType":"OneWay","hashCodeToCheckValidation":"2b6edf1e6f7ddc3af2d505b9d2aa9eee","stubFile":null}');
+            });
+            addPerformanceMarker('requestLiveOffers');
+                require(['dctk/dctk', 'jquery'], function (dctk, $) {
+                    var omnitureJSON = $('#omnitureJSON').text() || '{}';
+                    dctk.initOmniture(JSON.parse(omnitureJSON));
+                });
+        };
+
+        if (Promise !== undefined) {
+            onSuccess();
+            return;
+        }
+
+        onError = function (e) {
+            require('dctk/dctk', function (dctk) {
+                dctk.logging.logError('Can not load polyfill', e);
+            });
+        };
+
+        loadPolyfill = function (src, onSuccess, onError) {
+            var polyfillScriptTag = document.createElement('script');
+            polyfillScriptTag.type = "text\/javascript";
+            polyfillScriptTag.onload = onSuccess;
+            polyfillScriptTag.onerror = onError;
+            document.head.appendChild(polyfillScriptTag);
+            polyfillScriptTag.src = src;
+        };
+
+        loadPolyfill('//a.travel-assets.com/bundles/expweb/flightUx/flights-promise-polyfill-13fab63e49b62a56fcd118a01211ae4d-min.js', onSuccess, onError);
+
+    })(window.Promise)
+</script>
