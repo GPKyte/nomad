@@ -9,8 +9,8 @@ A set of tools with the common purpose of finding great opportunities to travel.
 Every moment, opportunities to live and experience new cultures fade away. Because it is impossible to delegate all personal time to searching for travel opportunities, cheap travel options go unnoticed. In their wake, loom expensive tickets that steal from tight budgets better spent far away than online. Instead of missing great deals, delegate the tedium of searching to an automaton
 
 ## Requirements for Local use
-* go 1.13+
-* PostgreSQL 11.7+ If persistant data needed
+* go (1.13+)[https://golang.org/doc/install]
+* PostgreSQL (11.7+)[https://www.postgresql.org/docs/11/install-short.html] If persistant data needed
 * Clone this repository with `go get https://github.com/GPKyte/nomad`
 
 ## Usage
