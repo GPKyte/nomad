@@ -8,10 +8,16 @@ A set of tools with the common purpose of finding great opportunities to travel.
 
 Every moment, opportunities to live and experience new cultures fade away. Because it is impossible to delegate all personal time to searching for travel opportunities, cheap travel options go unnoticed. In their wake, loom expensive tickets that steal from tight budgets better spent far away than online. Instead of missing great deals, delegate the tedium of searching to an automaton
 
+## Requirements for Local use
+* go 1.13+
+* PostgreSQL 11.7+ If persistant data needed
+* Clone this repository with `go get https://github.com/GPKyte/nomad`
 
 ## Usage
-
-`go run nomad [--OPTION...]`
+0) `cd $GO_PATH/src/github.com/GPKyte/nomad`
+1) `go build`
+2) `go test`
+3) `go run [--OPTIONS]`
 
 ### Flags
 
@@ -19,35 +25,19 @@ Passive and Active actions are being implemented and include:
   `--scrape`          Begins scraping default queries in the background. Compare to terminal operator & in `action &`
   `--discover`        
   `--config`          Modify settings that guide certain data collection decisions
-  `--build-cached`    Use cached data to build Graph
-  `--display-cached`
   `--help`            Display the usage`
 
 ### Testing
 
-Effort is taking to test 0, 1, n boundary cases, any clear expectations of transformations, and algorithmic correctness when feasible
-Testing is directed through the go standard library.
+Effort is taken to test 0, 1, n boundary cases, any clear expectations of transformations, and algorithmic correctness when feasible
+Testing is initiated through the go standard library and CLI like so:
   `go test`
-  `go test <package_name>`
-
+  `go test ./<packageName> --run <patternRegEx>`
 
 ## Contributions
 
 Any contributions are welcome! Pull Request any changes, and consider writing a small test to demonstrate what you expect to change.
 
-
-## Possible Modules + API and structure of project
-* SecureCredentials Implements CleanDataConstant
-* RawListing Implements DirtyDataConstant, GenericListing
-* CleanListing Implements CleanDataConstant, GenericListing
-* ExceptionSiteListingAsAnExample Extends CleanListing
-
-* TraversableLocation Implements GenericGraphNode
-* TraversableRoute Implements GenericGraphWalk
-
-* Parse.HTML
-* Parse.Listing
-* Parse.XYZ
 
 ## DevOps:
 * Configuration file (git ignore)
@@ -57,15 +47,10 @@ Any contributions are welcome! Pull Request any changes, and consider writing a 
 
 ## Display of information and use cases
 * As a DEV
-    - I want global var value tracing
-    - Backwards debugging
     - Exchangeable components with polymorphistic behavior for tasks
     - Flat repository access to custom tools
     - Sanitized data in storage
-    - Security for credentials
-    - Process monitoring
     - Persistent log files and verbosity levels
-    - Encrypt logs as filtered (e.g. RSA with hidden keys)
     - Low effort integration and minimal redundant with Tableau viz
 
 
@@ -78,5 +63,5 @@ Any contributions are welcome! Pull Request any changes, and consider writing a 
     - View details for specific listing
     - View detail summaries for top-priority listings
     - Track listings meeting criteria for a time range and a set of destinations
-    - Create complex routes with optimal layovers (optimal for traveling to a pit-stop city)
+    - Create routes using multiday layovers (optimal for traveling to a pit-stop city)
 
