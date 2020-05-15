@@ -10,7 +10,7 @@ Every moment, opportunities to live and experience new cultures fade away. Becau
 
 ## Requirements for Local use
 * go (1.13+)[https://golang.org/doc/install]
-* PostgreSQL (11.7+)[https://www.postgresql.org/docs/11/install-short.html] If persistant data needed
+* PostgreSQL (11.7+)[https://www.postgresql.org/docs/11/install-short.html] If persistant data needed locally
 * Clone this repository with `go get https://github.com/GPKyte/nomad`
 
 ## Usage
@@ -20,7 +20,7 @@ Every moment, opportunities to live and experience new cultures fade away. Becau
 3) `go run [--OPTIONS]`
 
 ### Flags
-
+Currently flags are not supported but would include the following
 Passive and Active actions are being implemented and include:
   `--scrape`          Begins scraping default queries in the background. Compare to terminal operator & in `action &`
   `--discover`        

@@ -11,6 +11,7 @@ import (
 
 	"github.com/GPKyte/nomad/scrape"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq" // DB driver for PostgreSQL
 )
 
 // Here lay the options that may be supported one day. Eren solo un idea
@@ -34,7 +35,7 @@ const numNotRecorded = 997163173 /* An absurdly high and specific number to indi
 const textNotRecorded = "N/A"
 
 const createSchema = `
-CREATE TABLE fare (
+CREATE TABLE fare IF NOT EXISTS (
 	airline text,
 	cost	int,
 	legs	int,
@@ -131,11 +132,12 @@ func record(data chan scrape.Listing, verbose bool) {
 
 /* Return a pool of connections to Travel fare database */
 func initDB() *sqlx.DB {
-	connParam := fmt.Sprint(os.Getenv("DATABASE_URL"), "sslmode=enable") // May need additional param como user, y password, pero no intereso en ese ahora
+	connParam := fmt.Sprint(os.Getenv("DATABASE_URL"), "sslmode=require") // May need additional param como user, y password, pero no intereso en ese ahora
 	conn, err := sqlx.Connect("postgres", connParam)
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
+	conn.MustExec(createSchema)
 	return conn
 }
 
