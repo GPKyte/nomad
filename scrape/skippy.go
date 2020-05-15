@@ -32,8 +32,8 @@ type SkippyScraper struct {
 	name    string
 }
 
-// New will provide a consistent destination across scrape jobs, supply the channel to send Listings through
-func New(storage chan Listing) *SkippyScraper {
+// NewSkippy will provide a consistent destination across scrape jobs, supply the channel to send Listings through
+func NewSkippy(storage chan Listing) *SkippyScraper {
 	S := new(SkippyScraper)
 	S.storage = storage
 	S.name = "Skiplagged.com v3"
